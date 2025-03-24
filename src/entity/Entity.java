@@ -2,11 +2,13 @@ package entity;
 
 import main.GamePanel;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
     public int x,y,speed;
 
+    public int worldX, worldY;
     public BufferedImage up1;
     public BufferedImage up2;
     public BufferedImage left1;
@@ -15,7 +17,15 @@ public class Entity {
     public BufferedImage right2;
     public BufferedImage leftidle;
     public BufferedImage rightidle;
+    public BufferedImage punch;
+    public BufferedImage kick;
+    public BufferedImage sp;
+
     public String direction;
+
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
+
 
     public int spriteCounter = 0, spriteNum = 1;
 

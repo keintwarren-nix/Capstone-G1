@@ -11,17 +11,22 @@ import java.io.IOException;
 public  class Player extends Entity{
     GamePanel gp;
     KeyHandler keyH;
+    public int hasKey = 0;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
         this.keyH = keyH;
 
+        solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
+
         setDefaultValues();
         getPlayerImage();
     }
 
     public void setDefaultValues(){
+        worldX = gp.tileSize * 23;
+        worldY = gp.tileSize * 21;
         x = 100;
         y = 420;
         speed = 4;
@@ -40,6 +45,9 @@ public  class Player extends Entity{
             right2 = ImageIO.read(getClass().getResource("/res/player/snowwhite_rightwalk_2.png"));
             leftidle = ImageIO.read(getClass().getResource("/res/player/snowwhite_idle_left.png"));
             rightidle = ImageIO.read(getClass().getResource("/res/player/snowwhite_idle_right.png"));
+            punch = ImageIO.read(getClass().getResource("/res/player/snowwhite_punch.png"));
+            kick = ImageIO.read(getClass().getResource("/res/player/snowwhite_kick.png"));
+            sp = ImageIO.read(getClass().getResource("/res/player/cinderella_idle_right.png"));
 
 
         }catch (IOException e){
@@ -51,16 +59,22 @@ public  class Player extends Entity{
 
     public void update(){
 
-        if(keyH.up ||  keyH.right || keyH.left){
+        if(keyH.up ||  keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp){
             if(keyH.up) {
                 direction = "up";
-                y -= (speed*2);
+                y -= (speed*3);
             } else if (keyH.right) {
                 direction = "right";
                 x += speed;
             } else if (keyH.left) {
                 direction = "left";
                 x -= speed;
+            }else if(keyH.punch){
+                direction = "punch";
+            }else if(keyH.kick){
+                direction = "kick";
+            }else if(keyH.sp){
+                direction = "sp";
             }
 
             spriteCounter++;
@@ -75,8 +89,11 @@ public  class Player extends Entity{
         }
 
         if ( y != 420) {
-            y += speed;
+            y += speed+4;
         }
+
+        collisionOn = false;
+//        gp.cChecker.checkTile(this);
 
     }
 
@@ -109,6 +126,15 @@ public  class Player extends Entity{
                 if(spriteNum == 2){
                     image = left2;
                 }
+                break;
+            case "punch":
+                image = punch;
+                break;
+            case "kick":
+                image = kick;
+                break;
+            case "sp":
+                image = sp;
                 break;
         }
         g2.drawImage(image,x,y,gp.tileSize*2, gp.tileSize*2, null);

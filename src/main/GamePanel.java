@@ -1,28 +1,44 @@
 package main;
 
+import Tile.tileManager;
 import entity.Player;
+import object.SuperObject;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class GamePanel extends JPanel implements Runnable {
-    int playerY = 400, playerX = 100, fps = 60;
+
+    public final int tileState = 0;
+
+    int fps = 60;
     int originalTileSize = 16;
     int scale = 3;
-    int maxScreenCol = 16;
-    int maxScreenRow = 12;
+   public int maxScreenCol = 16;
+   public int maxScreenRow = 12;
     public int tileSize = originalTileSize * scale;
-    int screenWidth = tileSize * maxScreenCol;
-    int screenHeight = tileSize * maxScreenRow;
+   public int screenWidth = tileSize * maxScreenCol;
+    public int screenHeight = tileSize * maxScreenRow;
 
     long currentTime = System.nanoTime();
 
+    public int gameState;
+    tileManager tileM = new tileManager(this);
+    Sound sound = new Sound();
+
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+
+//   public CollisionChecker cChecker = new CollisionChecker(this);
+
     Player player = new Player(this, keyH);
 
     private Image backgroundImage; // Background image variable
+
+    public SuperObject obj[] = new SuperObject[10];
+
 
     // Screen
     public GamePanel() {
@@ -38,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
             e.printStackTrace(); // Print error if image not found
         }
     }
+
 
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -72,14 +89,38 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        // Draw background image
-        if (backgroundImage != null) {
-            g2.drawImage(backgroundImage, 0, 0, screenWidth, screenHeight, this);
-        }
+        //Title Screen
 
-        // Draw the player
+
+            // Draw background image
+            if (backgroundImage != null) {
+                g2.drawImage(backgroundImage, 0, 0, screenWidth, screenHeight, this);
+            }
+
+
+            // Draw the player
+        try {
+            tileM.draw(g2);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         player.draw(g2);
 
-        g2.dispose();
+            g2.dispose();
     }
+
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
+        sound.stop();
+    }
+
+    public void stopMusic(){
+        sound.stop();
+    }
+
+    public void playSE(int i){
+        sound.setFile(i);
+        sound.play();
+   }
 }
