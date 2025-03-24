@@ -11,8 +11,7 @@ public class tileManager {
 
     GamePanel gp;
     Tile[] tile;
-    public BufferedImage imgDummy;
-    public boolean dummycol = false;
+
 
     public tileManager(GamePanel gp){
         this.gp = gp;
@@ -48,9 +47,6 @@ public class tileManager {
         }
 
         }
-
-        imgDummy = ImageIO.read(getClass().getResource("/res/objects/dummy.png"));
-        g2.drawImage(imgDummy, 520, 424, gp.tileSize+32, gp.tileSize+32,null);
 
 
     }

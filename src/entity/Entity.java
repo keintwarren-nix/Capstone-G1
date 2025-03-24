@@ -20,6 +20,7 @@ public class Entity {
     public BufferedImage punch;
     public BufferedImage kick;
     public BufferedImage sp;
+    public BufferedImage stand;
 
     public String direction;
 

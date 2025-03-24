@@ -57,29 +57,36 @@ public  class Player extends Entity{
 
     }
 
-    public void update(){
+    private boolean isJumping = false;
+    private int jumpHeight = 100; // Max jump height
+    private int jumpStartY;
 
-        if(keyH.up ||  keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp){
-            if(keyH.up) {
+    public void update() {
+
+        boolean keyPressed = keyH.up || keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp;
+
+        if (keyPressed) {
+            if (keyH.up && y == 420 && !isJumping) { // Jump only if on ground and not already jumping
                 direction = "up";
-                y -= (speed*3);
+                isJumping = true;
+                jumpStartY = y;
             } else if (keyH.right) {
                 direction = "right";
                 x += speed;
             } else if (keyH.left) {
                 direction = "left";
                 x -= speed;
-            }else if(keyH.punch){
+            } else if (keyH.punch) {
                 direction = "punch";
-            }else if(keyH.kick){
+            } else if (keyH.kick) {
                 direction = "kick";
-            }else if(keyH.sp){
+            } else if (keyH.sp) {
                 direction = "sp";
             }
 
             spriteCounter++;
-            if(spriteCounter > 12){
-                if(spriteNum == 1){
+            if (spriteCounter > 12) {
+                if (spriteNum == 1) {
                     spriteNum = 2;
                 } else if (spriteNum == 2) {
                     spriteNum = 1;
@@ -87,15 +94,32 @@ public  class Player extends Entity{
                 spriteCounter = 0;
             }
         }
+        // Return to rightidle after releasing keys
+        else {
+            if (!isJumping && y == 420) {
+                direction = "rightidle"; // Reset to rightidle after release and landing
+            }
+        }
 
-        if ( y != 420) {
-            y += speed+4;
+        // Handle jumping logic
+        if (isJumping) {
+            y -= speed * 4; // Move up when jumping
+            if (y <= jumpStartY - jumpHeight) { // Reached max jump height
+                isJumping = false; // Stop jumping
+            }
+        }
+        // Simulate gravity if not on ground
+        else if (y < 420) {
+            y += speed * 2; // Fall back down
+            if (y > 420) {
+                y = 420; // Lock back to ground
+            }
         }
 
         collisionOn = false;
-//        gp.cChecker.checkTile(this);
-
+//    gp.cChecker.checkTile(this);
     }
+
 
     public void draw(Graphics2D g2){
 //        g2.setColor(Color.black);

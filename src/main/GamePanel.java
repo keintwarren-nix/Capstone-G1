@@ -1,6 +1,7 @@
 package main;
 
 import Tile.tileManager;
+import entity.Dummy;
 import entity.Player;
 import object.SuperObject;
 
@@ -11,6 +12,7 @@ import javax.imageio.ImageIO;
 
 public class GamePanel extends JPanel implements Runnable {
 
+    int dummyLife = 3;
     public final int tileState = 0;
 
     int fps = 60;
@@ -33,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 //   public CollisionChecker cChecker = new CollisionChecker(this);
 
+    Dummy dummy = new Dummy(this);
     Player player = new Player(this, keyH);
 
     private Image backgroundImage; // Background image variable
@@ -105,8 +108,14 @@ public class GamePanel extends JPanel implements Runnable {
             throw new RuntimeException(e);
         }
         player.draw(g2);
-
-            g2.dispose();
+        if(player.direction == "punch" || player.direction == "kick" || player.direction == "sp"){
+            if(player.x == 520){
+                dummyLife--;
+                System.out.println("Dummy's Life reduced by 1!");
+            }
+        }
+        dummy.draw(g2);
+        g2.dispose();
     }
 
     public void playMusic(int i){
