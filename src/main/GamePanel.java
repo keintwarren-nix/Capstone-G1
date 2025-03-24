@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    int dummyLife = 3;
     public final int tileState = 0;
 
     int fps = 60;
@@ -24,23 +23,31 @@ public class GamePanel extends JPanel implements Runnable {
    public int screenWidth = tileSize * maxScreenCol;
     public int screenHeight = tileSize * maxScreenRow;
 
+    //World Setting
+    public final int
+            maxWorldCol = 420,
+            maxWorldRow = 100;
+
     long currentTime = System.nanoTime();
 
     public int gameState;
-    tileManager tileM = new tileManager(this);
-    Sound sound = new Sound();
+    public tileManager tileM = new tileManager(this);
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
 
-//   public CollisionChecker cChecker = new CollisionChecker(this);
+   public CollisionChecker cChecker = new CollisionChecker(this);
 
-    Dummy dummy = new Dummy(this);
-    Player player = new Player(this, keyH);
+   public AssetSetter aSetter = new AssetSetter(this);
+    public Sound sound = new Sound();
+
+    public Dummy dummy = new Dummy(this);
+   public Player player = new Player(this, keyH);
 
     private Image backgroundImage; // Background image variable
 
     public SuperObject obj[] = new SuperObject[10];
+
 
 
     // Screen
@@ -85,6 +92,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         player.update();
+        if(dummy.health > 0) {
+            dummy.update();
+        }
     }
 
     @Override
@@ -100,36 +110,31 @@ public class GamePanel extends JPanel implements Runnable {
                 g2.drawImage(backgroundImage, 0, 0, screenWidth, screenHeight, this);
             }
 
-
-            // Draw the player
+            //tile
         try {
             tileM.draw(g2);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        player.draw(g2);
-        if(player.direction == "punch" || player.direction == "kick" || player.direction == "sp"){
-            if(player.x == 520){
-                dummyLife--;
-                System.out.println("Dummy's Life reduced by 1!");
+
+        //object
+        for(int i = 0; i < obj.length; i++){
+            if(obj[i] != null){
+                obj[i].draw(g2, this);
             }
         }
-        dummy.draw(g2);
+
+        //player
+        player.draw(g2);
+        if(dummy.health > 0) {
+            dummy.draw(g2);
+        }
         g2.dispose();
     }
 
-    public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.stop();
+    public void setupGame(){
+        aSetter.setObject();
+        sound.playMusic(1);
     }
 
-    public void stopMusic(){
-        sound.stop();
-    }
-
-    public void playSE(int i){
-        sound.setFile(i);
-        sound.play();
-   }
 }

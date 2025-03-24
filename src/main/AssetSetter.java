@@ -1,6 +1,6 @@
 package main;
 
-import object.iconCinder;
+import object.Icon;
 
 public class AssetSetter {
     GamePanel gp;
@@ -10,6 +10,8 @@ public class AssetSetter {
     }
 
     public void setObject() {
-        gp.obj/*[mapNum]*/[0] = new iconCinder(gp);
+        gp.obj[0] = new Icon();
+        gp.obj[0].worldX = 20;
+        gp.obj[0].worldY = 4;
     }
 }

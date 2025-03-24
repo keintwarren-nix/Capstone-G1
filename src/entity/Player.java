@@ -1,42 +1,39 @@
 package entity;
+
 import main.GamePanel;
 import main.KeyHandler;
-
+import object.Health;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public  class Player extends Entity{
+public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
-    public int hasKey = 0;
+    int i = 1;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
         this.keyH = keyH;
-
-        solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
-
+        solidArea = new Rectangle(8, 16, 32, 16);
         setDefaultValues();
         getPlayerImage();
+        loadHealthImages();
+        healthIcon = new Health();
     }
 
-    public void setDefaultValues(){
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
-        x = 100;
-        y = 420;
+    public void setDefaultValues() {
+        worldX = 100;
+        worldY = 420;
         speed = 4;
         direction = "rightidle";
     }
 
-    public void getPlayerImage(){
-
-        try{
-
+    public void getPlayerImage() {
+        try {
             up1 = ImageIO.read(getClass().getResource("/res/player/snowwhite_jump.png"));
             up2 = ImageIO.read(getClass().getResource("/res/player/snowwhite_jump.png"));
             left1 = ImageIO.read(getClass().getResource("/res/player/snowwhite_leftwalk_1.png"));
@@ -48,108 +45,131 @@ public  class Player extends Entity{
             punch = ImageIO.read(getClass().getResource("/res/player/snowwhite_punch.png"));
             kick = ImageIO.read(getClass().getResource("/res/player/snowwhite_kick.png"));
             sp = ImageIO.read(getClass().getResource("/res/player/cinderella_idle_right.png"));
-
-
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-
+    public void loadHealthImages() {
+        try {
+            healthImages = new BufferedImage[5];
+            healthImages[4] = ImageIO.read(getClass().getResource("/res/objects/full.png"));
+            healthImages[3] = ImageIO.read(getClass().getResource("/res/objects/thirdfourth.png"));
+            healthImages[2] = ImageIO.read(getClass().getResource("/res/objects/half.png"));
+            healthImages[1] = ImageIO.read(getClass().getResource("/res/objects/onefourth.png"));
+            healthImages[0] = ImageIO.read(getClass().getResource("/res/objects/dead.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isJumping = false;
-    private int jumpHeight = 100; // Max jump height
+    private int jumpHeight = 100;
     private int jumpStartY;
 
-    public void update() {
+    public void updateHealthIcon() {
 
-        boolean keyPressed = keyH.up || keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp;
-
-        if (keyPressed) {
-            if (keyH.up && y == 420 && !isJumping) { // Jump only if on ground and not already jumping
-                direction = "up";
-                isJumping = true;
-                jumpStartY = y;
-            } else if (keyH.right) {
-                direction = "right";
-                x += speed;
-            } else if (keyH.left) {
-                direction = "left";
-                x -= speed;
-            } else if (keyH.punch) {
-                direction = "punch";
-            } else if (keyH.kick) {
-                direction = "kick";
-            } else if (keyH.sp) {
-                direction = "sp";
-            }
-
-            spriteCounter++;
-            if (spriteCounter > 12) {
-                if (spriteNum == 1) {
-                    spriteNum = 2;
-                } else if (spriteNum == 2) {
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
-            }
+        if (health == 100){
+            healthIcon.image = healthImages[4];
+        } else if (health <= 75 && health > 50) {
+            healthIcon.image = healthImages[3];
+        } else if (health <= 50 && health > 25) {
+            healthIcon.image = healthImages[2];
+        } else if (health <= 25 && health > 0) {
+            healthIcon.image = healthImages[1];
+        } else if (health <= 0) {
+            healthIcon.image = healthImages[0];
         }
-        // Return to rightidle after releasing keys
-        else {
-            if (!isJumping && y == 420) {
-                direction = "rightidle"; // Reset to rightidle after release and landing
-            }
-        }
-
-        // Handle jumping logic
-        if (isJumping) {
-            y -= speed * 4; // Move up when jumping
-            if (y <= jumpStartY - jumpHeight) { // Reached max jump height
-                isJumping = false; // Stop jumping
-            }
-        }
-        // Simulate gravity if not on ground
-        else if (y < 420) {
-            y += speed * 2; // Fall back down
-            if (y > 420) {
-                y = 420; // Lock back to ground
-            }
-        }
-
-        collisionOn = false;
-//    gp.cChecker.checkTile(this);
     }
 
+    public void update() {
+        boolean keyPressed = keyH.up || keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp;
+        updateHealthIcon();
+        if (keyPressed) {
+            String prevDirection = direction;
 
-    public void draw(Graphics2D g2){
-//        g2.setColor(Color.black);
-//        g2.fillRect(x,y, gp.tileSize, gp.tileSize);
+            if (keyH.up && worldY == 420 && !isJumping) {
+                direction = "up";
+                isJumping = true;
+                jumpStartY = worldY;
+            } else if (keyH.right) {
+                direction = "right";
+            } else if (keyH.left) {
+                direction = "left";
+            } else if (keyH.punch) {
+                direction = "punch";
+                gp.sound.playSE(3);
+            } else if (keyH.kick) {
+                direction = "kick";
+                gp.sound.playSE(4);
+            } else if (keyH.sp) {
+                direction = "sp";
+                gp.sound.playSE(5);
+            }
+
+            collisionOn = false;
+
+            gp.cChecker.checkTile(this);
+            if(gp.dummy.health > 0) {
+                gp.cChecker.checkEntity(this, gp.dummy);
+            }
+
+            if (!collisionOn) {
+                switch (direction) {
+                    case "right":
+                        worldX += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                }
+            } else if (collisionOn) {
+                if (prevDirection.equals("right")) {
+                    worldX -= speed;
+                    direction = "left";
+                } else if (prevDirection.equals("left")) {
+                    worldX += speed;
+                    direction = "right";
+                }
+                collisionOn = false;
+            }
+        } else {
+            if (!isJumping && worldY == 420) {
+                direction = "rightidle";
+            }
+        }
+
+        if (isJumping) {
+            worldY -= speed * 4;
+            if (worldY <= jumpStartY - jumpHeight) {
+                isJumping = false;
+            }
+        } else if (worldY < 420) {
+            worldY += speed * 2;
+            if (worldY > 420) {
+                worldY = 420;
+            }
+        }
+
+        spriteCounter++;
+        if (spriteCounter > 12) {
+            spriteNum = (spriteNum == 1) ? 2 : 1;
+            spriteCounter = 0;
+        }
+    }
+
+    public void draw(Graphics2D g2) {
         BufferedImage image = rightidle;
 
-        switch (direction){
+        switch (direction) {
             case "up":
-                if(spriteNum == 1) {
-                    image = up1;
-                }
-                if(spriteNum == 2){
-                    image = up2;
-                }
+                image = (spriteNum == 1) ? up1 : up2;
                 break;
             case "right":
-                if(spriteNum == 1) {
-                    image = right1;
-                }
-                if(spriteNum == 2){
-                    image = right2;
-                }
+                image = (spriteNum == 1) ? right1 : right2;
                 break;
             case "left":
-                if(spriteNum == 1) {
-                    image = left1;
-                }
-                if(spriteNum == 2){
-                    image = left2;
-                }
+                image = (spriteNum == 1) ? left1 : left2;
                 break;
             case "punch":
                 image = punch;
@@ -161,6 +181,11 @@ public  class Player extends Entity{
                 image = sp;
                 break;
         }
-        g2.drawImage(image,x,y,gp.tileSize*2, gp.tileSize*2, null);
+
+        g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
+
+        if (healthIcon != null && healthIcon.image != null) {
+            g2.drawImage(healthIcon.image, 30, -150, gp.tileSize*8, gp.tileSize*8, null);
+        }
     }
 }

@@ -5,12 +5,13 @@ import main.GamePanel;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class iconCinder extends SuperObject{
-    public iconCinder(GamePanel gp){
+public class Icon extends SuperObject{
+    public Icon(){
 
-        name = "iconCinderella";
+        name = "snowWhite";
         try{
-            image = ImageIO.read(getClass().getResource("/objects/cinder.jpg"));
+            image = ImageIO.read(getClass().getResource("/res/objects/snowwhite.jpg"));
+
         }catch (IOException e){
             e.printStackTrace();
         }

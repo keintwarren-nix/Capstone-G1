@@ -19,6 +19,10 @@ public class Sound {
         soundURL[0] = getClass().getResource("/res/sounds/bgMusic1.wav");
         soundURL[1] = getClass().getResource("/res/sounds/bgMusic2.wav");
         soundURL[2] = getClass().getResource("/res/sounds/jump.wav");
+        soundURL[3] = getClass().getResource("/res/sounds/slam.wav");
+        soundURL[4] = getClass().getResource("/res/sounds/leaf.wav");
+        soundURL[5] = getClass().getResource("/res/sounds/special.wav");
+
     }
 
     public void setFile(int i){
@@ -39,12 +43,28 @@ public class Sound {
     }
 
     public void loop(){
+
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     public void stop(){
         clip.stop();
 
     }
+    public void playMusic(int i){
+        this.setFile(i);
+        this.play();
+        this.loop();
+    }
+    public void stopMusic()
+    {
+        this.stop();
+    }
+
+    public void playSE(int i){
+        this.setFile(i);
+        this.play();
+    }
+
     public void checkVolume(){
         switch(volumeScale){
             case 0: volume = -60f;
@@ -62,16 +82,6 @@ public class Sound {
         }
         fc.setValue(volume);
     }
-    public void playMusic(int i){
-        this.setFile(i);
-        this.play();
-        this.loop();
-    }
-    public void stopMusic(){
-        this.stop();
-    }
-    public void playSE(int i){
-        this.setFile(i);
-        this.play();
-    }
+
+
 }
