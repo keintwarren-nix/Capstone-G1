@@ -8,7 +8,6 @@ import java.net.URL;
 
 public class Sound {
 
-
     Clip clip;
     URL[] soundURL = new URL[30];
     FloatControl fc;
@@ -22,7 +21,6 @@ public class Sound {
         soundURL[3] = getClass().getResource("/res/sounds/slam.wav");
         soundURL[4] = getClass().getResource("/res/sounds/leaf.wav");
         soundURL[5] = getClass().getResource("/res/sounds/special.wav");
-
     }
 
     public void setFile(int i){
@@ -38,25 +36,27 @@ public class Sound {
     }
 
     public void play(){
-
         clip.start();
     }
 
     public void loop(){
-
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
-    public void stop(){
-        clip.stop();
 
+    public void stop(){
+        if(clip != null && clip.isRunning()) {
+            clip.stop();
+            clip.close();
+        }
     }
+
     public void playMusic(int i){
         this.setFile(i);
         this.play();
         this.loop();
     }
-    public void stopMusic()
-    {
+
+    public void stopMusic() {
         this.stop();
     }
 
@@ -82,6 +82,4 @@ public class Sound {
         }
         fc.setValue(volume);
     }
-
-
 }

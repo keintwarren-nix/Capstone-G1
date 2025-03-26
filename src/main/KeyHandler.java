@@ -4,42 +4,113 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-    public boolean up, right, left, punch, kick, sp;
-    private long lastUpPressTime = 0;
-    private final long upCooldown = 100; // 1.5 seconds cooldown
-    private boolean upPressed = false; // To prevent holding W
+
+    GamePanel gp;
+    public boolean up, left, right, punch, kick, sp;
+
+    public KeyHandler(GamePanel gp) {
+        this.gp = gp;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_D) {
-            right = true;
+        if( gp.gameState == gp.tileState){
+
+            if (code == KeyEvent.VK_W) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 0){
+                    gp.ui.commandNum = 3;
+                }
+            }
+            if (code == KeyEvent.VK_S) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 3){
+                    gp.ui.commandNum = 0;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 0){
+                    gp.gameState = gp.playState;
+                }
+
+                if(gp.ui.commandNum == 1){
+
+                }
+
+                if(gp.ui.commandNum == 2){
+
+                }
+
+                if(gp.ui.commandNum == 3){
+                System.exit(0);
+                }
+            }
+        }
+
+
+        // Handle different key presses based on game state
+        if (gp.gameState == gp.playState) {
+            handlePlayState(code);
+        } else if (gp.gameState == gp.pauseState) {
+            handlePauseState(code);
+        } else if (gp.gameState == gp.gameOverState) {
+            handleGameOverState(code);
+        } else if (gp.gameState == gp.winState) {
+            handleWinState(code);
+        }
+    }
+
+    private void handlePlayState(int code) {
+        if (code == KeyEvent.VK_W) {
+            up = true;
         }
         if (code == KeyEvent.VK_A) {
             left = true;
         }
-        if (code == KeyEvent.VK_W && !upPressed) {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastUpPressTime >= upCooldown) {
-                up = true;
-                lastUpPressTime = currentTime;
-                upPressed = true; // Mark W as pressed
-            }
-        }
-        if (code == KeyEvent.VK_G) {
-            punch = true;
-        }
-        if (code == KeyEvent.VK_H) {
-            kick = true;
+        if (code == KeyEvent.VK_D) {
+            right = true;
         }
         if (code == KeyEvent.VK_J) {
+            punch = true;
+        }
+        if (code == KeyEvent.VK_K) {
+            kick = true;
+        }
+        if (code == KeyEvent.VK_L) {
             sp = true;
+        }
+
+        // Add pause functionality
+        if (code == KeyEvent.VK_ESCAPE) {
+            gp.gameState = gp.pauseState;
+        }
+    }
+
+    private void handlePauseState(int code) {
+        // Resume game when ESC is pressed again
+        if (code == KeyEvent.VK_ESCAPE) {
+            gp.gameState = gp.playState;
+        }
+    }
+
+    private void handleGameOverState(int code) {
+        // Restart game when ENTER is pressed
+        if (code == KeyEvent.VK_ENTER) {
+            gp.restart();
+        }
+    }
+
+    private void handleWinState(int code) {
+        // Restart game when ENTER is pressed
+        if (code == KeyEvent.VK_ENTER) {
+            gp.restart();
         }
     }
 
@@ -47,23 +118,22 @@ public class KeyHandler implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_D) {
-            right = false;
+        if (code == KeyEvent.VK_W) {
+            up = false;
         }
         if (code == KeyEvent.VK_A) {
             left = false;
         }
-        if (code == KeyEvent.VK_W) {
-            up = false;
-            upPressed = false; // Reset to allow W press again after release
-        }
-        if (code == KeyEvent.VK_G) {
-            punch = false;
-        }
-        if (code == KeyEvent.VK_H) {
-            kick = false;
+        if (code == KeyEvent.VK_D) {
+            right = false;
         }
         if (code == KeyEvent.VK_J) {
+            punch = false;
+        }
+        if (code == KeyEvent.VK_K) {
+            kick = false;
+        }
+        if (code == KeyEvent.VK_L) {
             sp = false;
         }
     }
