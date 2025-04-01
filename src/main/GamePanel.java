@@ -12,20 +12,20 @@ import javax.imageio.ImageIO;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    public final int tileState = 0;
+        public final int tileState = 0;
 
-    int fps = 60;
-    int originalTileSize = 16;
-    int scale = 3;
-    public int maxScreenCol = 16;
-    public int maxScreenRow = 12;
-    public int tileSize = originalTileSize * scale;
-    public int screenWidth = tileSize * maxScreenCol;
-    public int screenHeight = tileSize * maxScreenRow;
+        int fps = 60;
+        int originalTileSize = 16;
+        int scale = 3;
+        public int maxScreenCol = 16;
+        public int maxScreenRow = 12;
+        public int tileSize = originalTileSize * scale;
+        public int screenWidth = tileSize * maxScreenCol;
+        public int screenHeight = tileSize * maxScreenRow;
 
-    // World Settings
-    public Ui ui = new Ui(this);
-    public final int maxWorldCol = 420, maxWorldRow = 100;
+        // World Settings
+        public Ui ui = new Ui(this);
+        public final int maxWorldCol = 420, maxWorldRow = 100;
 
     long currentTime = System.nanoTime();
 
@@ -37,6 +37,11 @@ public class GamePanel extends JPanel implements Runnable {
     public final int winState = 4;
     public final int choosingState = 5;
     public final int chooseCharacterState = 6;
+    public final int abState = 7;
+    public final int abState2 = 8;
+    public final int abState3 = 9;
+    public final int abState4 = 10;
+    public final int abState5 = 11;
 
     public tileManager tileM = new tileManager(this);
 
@@ -185,7 +190,7 @@ public class GamePanel extends JPanel implements Runnable {
         // Always stop any existing music first
         if(gameState != tileState) {
             sound.playMusic(1);
-            if (gameState == winState || gameState == gameOverState) {
+            if (gameState == winState || gameState == gameOverState || gameState == pauseState || gameState == tileState) {
                 // Don't play music for these states
                 sound.stopMusic();
             }

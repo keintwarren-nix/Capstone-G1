@@ -11,7 +11,7 @@ public class AssetSetter {
 
     public void setObject() {
         gp.obj[0] = new Icon();
-        gp.obj[0].worldX = 20;
+        gp.obj[0].worldX = 400;
         gp.obj[0].worldY = 4;
     }
 }

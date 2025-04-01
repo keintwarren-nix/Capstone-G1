@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
-public class Dummy extends Entity {
+public class Dummy extends Entity implements Character{
 
     GamePanel gp;
     BufferedImage image;
@@ -46,6 +46,7 @@ public class Dummy extends Entity {
         deathEffect = new DeathEffect(gp, this);
     }
 
+    @Override
     public void getDummy() {
         try {
             left1 = ImageIO.read(getClass().getResource("/res/player/cinderella_leftwalk_1.png"));
@@ -63,28 +64,34 @@ public class Dummy extends Entity {
 
     public void loadHealthImages() {
         try {
-            healthImages = new BufferedImage[5];
-            healthImages[4] = ImageIO.read(getClass().getResource("/res/objects/full.png"));
-            healthImages[3] = ImageIO.read(getClass().getResource("/res/objects/thirdfourth.png"));
-            healthImages[2] = ImageIO.read(getClass().getResource("/res/objects/half.png"));
-            healthImages[1] = ImageIO.read(getClass().getResource("/res/objects/onefourth.png"));
-            healthImages[0] = ImageIO.read(getClass().getResource("/res/objects/dead.png"));
+            healthImages = new BufferedImage[6];
+
+            healthImages[5] = ImageIO.read(getClass().getResource("/res/objects/66.png"));
+            healthImages[4] = ImageIO.read(getClass().getResource("/res/objects/55.png"));
+            healthImages[3] = ImageIO.read(getClass().getResource("/res/objects/44.png"));
+            healthImages[2] = ImageIO.read(getClass().getResource("/res/objects/33.png"));
+            healthImages[1] = ImageIO.read(getClass().getResource("/res/objects/22.png"));
+            healthImages[0] = ImageIO.read(getClass().getResource("/res/objects/11.png"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void updateHealthIcon() {
+
         if (health == 100) {
-            healthIcon.image = healthImages[4];
-        } else if (health <= 75 && health > 50) {
-            healthIcon.image = healthImages[3];
-        } else if (health <= 50 && health > 25) {
-            healthIcon.image = healthImages[2];
-        } else if (health <= 25 && health > 0) {
-            healthIcon.image = healthImages[1];
-        } else {
             healthIcon.image = healthImages[0];
+        } else if (health <= 80 && health > 60) {
+            healthIcon.image = healthImages[1];
+        }else if (health <= 60 && health > 40) {
+            healthIcon.image = healthImages[2];
+        }else if (health <= 40 && health > 20) {
+            healthIcon.image = healthImages[3];
+        }else if (health <= 20 && health > 0) {
+            healthIcon.image = healthImages[4];
+        }else{
+            healthIcon.image = healthImages[5];
             collisionOn = false;
         }
     }
@@ -227,7 +234,6 @@ public class Dummy extends Entity {
         if (healthIcon != null && healthIcon.image != null) {
             int healthBarX = worldX + (gp.tileSize - gp.tileSize) / 2;
             int healthBarY = worldY - (gp.tileSize / 2) - 20;
-            g2.drawImage(healthIcon.image, healthBarX, healthBarY, gp.tileSize * 2, gp.tileSize * 2, null);
-        }
+            g2.drawImage(healthIcon.image, 370, -150, gp.tileSize * 8, gp.tileSize * 8, null);        }
     }
 }

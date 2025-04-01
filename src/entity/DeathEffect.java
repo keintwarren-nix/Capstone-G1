@@ -35,9 +35,9 @@ public class DeathEffect {
             deathImage = new ImageIcon(getClass().getResource("/res/objects/purple_death.gif")).getImage();
             // Store the entity's current image for the death animation
             if (entity instanceof Dummy) {
-                entityImage = ((Dummy)entity).leftidle;
+                entityImage = ((Dummy)entity).up1;
             } else if (entity instanceof Player) {
-                entityImage = ((Player)entity).leftidle;
+                entityImage = ((Player)entity).up2;
             }
         } catch (Exception e) {
             System.out.println("Error loading death effect resources");

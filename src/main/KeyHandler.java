@@ -20,8 +20,7 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
-        if( gp.gameState == gp.choosingState){
-
+        if(gp.gameState == gp.choosingState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
                 if(gp.ui.commandNum < 0){
@@ -41,50 +40,193 @@ public class KeyHandler implements KeyListener {
                 }
 
                 if(gp.ui.commandNum == 1){
-
+                    // Player vs Player logic here
                 }
 
                 if(gp.ui.commandNum == 2){
-                gp.gameState = gp.tileState;
+                    gp.gameState = gp.tileState;
                 }
             }
         }
 
-
-        if( gp.gameState == gp.tileState){
-
+        if(gp.gameState == gp.tileState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
                 if(gp.ui.commandNum < 0){
-                    gp.ui.commandNum = 3;
+                    gp.ui.commandNum = 0;
                 }
             }
+
             if (code == KeyEvent.VK_S) {
                 gp.ui.commandNum++;
                 if(gp.ui.commandNum > 3){
-                    gp.ui.commandNum = 0;
+                    gp.ui.commandNum = 3;
                 }
             }
 
             if (code == KeyEvent.VK_ENTER) {
                 if(gp.ui.commandNum == 0){
                     gp.gameState = gp.choosingState;
+                    gp.ui.commandNum = 0; // Reset command number for choosing state
                 }
 
                 if(gp.ui.commandNum == 1){
-
+                    // Menu logic here
                 }
 
                 if(gp.ui.commandNum == 2){
-
+                    gp.gameState = gp.abState;
+                    gp.ui.commandNum = 1; // Set to 1 to highlight "BACK" in About Us screen
+                    System.out.println("Changed to About Us state: " + gp.gameState); // Debug print
                 }
 
                 if(gp.ui.commandNum == 3){
-                System.exit(0);
+                    System.exit(0);
                 }
             }
         }
 
+        if (gp.gameState == gp.abState){
+            if (code == KeyEvent.VK_A) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 1){
+                    gp.ui.commandNum = 1;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+            if (code == KeyEvent.VK_D) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 2){
+                    gp.ui.commandNum = 2;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 1){
+                    gp.gameState = gp.tileState;
+                }
+
+                if(gp.ui.commandNum == 2){
+                    gp.gameState = gp.abState2;
+
+                    gp.ui.commandNum = 0;
+                }
+            }
+        }
+
+        if (gp.gameState == gp.abState2){
+            if (code == KeyEvent.VK_A) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 1){
+                    gp.ui.commandNum = 1;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+            if (code == KeyEvent.VK_D) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 2){
+                    gp.ui.commandNum = 2;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 1){
+                    gp.gameState = gp.abState;
+                }
+
+                if(gp.ui.commandNum == 2){
+                    gp.gameState = gp.abState3;
+
+                    gp.ui.commandNum = 0;
+
+                }
+            }
+        }
+
+        if (gp.gameState == gp.abState3){
+            if (code == KeyEvent.VK_A) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 1){
+                    gp.ui.commandNum = 1;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+            if (code == KeyEvent.VK_D) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 2){
+                    gp.ui.commandNum = 2;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 1){
+                    gp.gameState = gp.abState2;
+                }
+
+                if(gp.ui.commandNum == 2){
+                    gp.gameState = gp.abState4;
+
+                    gp.ui.commandNum = 0;
+
+                }
+            }
+        }
+
+        if (gp.gameState == gp.abState4){
+            if (code == KeyEvent.VK_A) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 1){
+                    gp.ui.commandNum = 1;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+            if (code == KeyEvent.VK_D) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 2){
+                    gp.ui.commandNum = 2;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 1){
+                    gp.gameState = gp.abState3;
+                }
+
+                if(gp.ui.commandNum == 2){
+                    gp.gameState = gp.abState5;
+
+                    gp.ui.commandNum = 0;
+
+                }
+            }
+        }
+
+        if (gp.gameState == gp.abState5){
+            if (code == KeyEvent.VK_A) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 1){
+                    gp.ui.commandNum = 1;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+            if (code == KeyEvent.VK_D) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 1){
+                    gp.ui.commandNum = 1;
+                }
+                System.out.println("About Us nav: " + gp.ui.commandNum); // Debug print
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 1){
+                    gp.gameState = gp.abState4;
+                }
+            }
+        }
 
         // Handle different key presses based on game state
         if (gp.gameState == gp.playState) {

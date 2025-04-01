@@ -68,27 +68,31 @@ public class Player extends Entity implements Character{
 
     public void loadHealthImages() {
         try {
-            healthImages = new BufferedImage[5];
-            healthImages[4] = ImageIO.read(getClass().getResource("/res/objects/full.png"));
-            healthImages[3] = ImageIO.read(getClass().getResource("/res/objects/thirdfourth.png"));
-            healthImages[2] = ImageIO.read(getClass().getResource("/res/objects/half.png"));
-            healthImages[1] = ImageIO.read(getClass().getResource("/res/objects/onefourth.png"));
-            healthImages[0] = ImageIO.read(getClass().getResource("/res/objects/dead.png"));
+            healthImages = new BufferedImage[6];
+            healthImages[5] = ImageIO.read(getClass().getResource("/res/objects/1.png"));
+            healthImages[4] = ImageIO.read(getClass().getResource("/res/objects/2.png"));
+            healthImages[3] = ImageIO.read(getClass().getResource("/res/objects/3.png"));
+            healthImages[2] = ImageIO.read(getClass().getResource("/res/objects/4.png"));
+            healthImages[1] = ImageIO.read(getClass().getResource("/res/objects/5.png"));
+            healthImages[0] = ImageIO.read(getClass().getResource("/res/objects/6.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void updateHealthIcon() {
+
         if (health == 100) {
+            healthIcon.image = healthImages[5];
+        } else if (health <= 80 && health > 60) {
             healthIcon.image = healthImages[4];
-        } else if (health <= 75 && health > 50) {
+        }else if (health <= 60 && health > 40) {
             healthIcon.image = healthImages[3];
-        } else if (health <= 50 && health > 25) {
+        }else if (health <= 40 && health > 20) {
             healthIcon.image = healthImages[2];
-        } else if (health <= 25 && health > 0) {
+        }else if (health <= 20 && health > 0) {
             healthIcon.image = healthImages[1];
-        } else {
+        }else{
             healthIcon.image = healthImages[0];
             // Check if we need to start death effect
             if (!isDead && health <= 0) {
