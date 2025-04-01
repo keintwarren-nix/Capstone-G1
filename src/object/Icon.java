@@ -10,7 +10,7 @@ public class Icon extends SuperObject{
 
         name = "snowWhite";
         try{
-            image = ImageIO.read(getClass().getResource("/res/objects/snowwhite.jpg"));
+            image = ImageIO.read(getClass().getResource("/res/objects/placeholder.jpg"));
 
         }catch (IOException e){
             e.printStackTrace();

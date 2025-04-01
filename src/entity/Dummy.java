@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
-public class Dummy extends Entity {
+public class Dummy extends Entity implements Character{
 
     GamePanel gp;
     BufferedImage image;
@@ -46,6 +46,7 @@ public class Dummy extends Entity {
         deathEffect = new DeathEffect(gp, this);
     }
 
+    @Override
     public void getDummy() {
         try {
             left1 = ImageIO.read(getClass().getResource("/res/player/cinderella_leftwalk_1.png"));
