@@ -35,6 +35,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pauseState = 2;
     public final int gameOverState = 3;
     public final int winState = 4;
+    public final int choosingState = 5;
+    public final int chooseCharacterState = 6;
 
     public tileManager tileM = new tileManager(this);
 
@@ -137,9 +139,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         if(gameState == titleState)
         {
-
             ui.draw(g2);
 
+        }else if (gameState == choosingState){
+            ui.draw(g2);
         }else {
 
             if (backgroundImage != null) {

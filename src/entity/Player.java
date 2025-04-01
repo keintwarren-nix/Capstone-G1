@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Player extends Entity {
+public class Player extends Entity implements Character{
     GamePanel gp;
     KeyHandler keyH;
     int attackCooldown = 1000; // 1 second cooldown
@@ -47,19 +47,20 @@ public class Player extends Entity {
         isDead = false;
     }
 
+    @Override
     public void getPlayerImage() {
         try {
-            up1 = ImageIO.read(getClass().getResource("/res/player/snowwhite_jump.png"));
-            up2 = ImageIO.read(getClass().getResource("/res/player/snowwhite_jump.png"));
-            left1 = ImageIO.read(getClass().getResource("/res/player/snowwhite_leftwalk_1.png"));
-            left2 = ImageIO.read(getClass().getResource("/res/player/snowwhite_leftwalk_2.png"));
-            right1 = ImageIO.read(getClass().getResource("/res/player/snowwhite_rightwalk_1.png"));
-            right2 = ImageIO.read(getClass().getResource("/res/player/snowwhite_rightwalk_2.png"));
-            leftidle = ImageIO.read(getClass().getResource("/res/player/snowwhite_idle_left.png"));
-            rightidle = ImageIO.read(getClass().getResource("/res/player/snowwhite_idle_right.png"));
-            punch = ImageIO.read(getClass().getResource("/res/player/cinder_punch_right.png"));
-            kick = ImageIO.read(getClass().getResource("/res/player/snowwhite_kick.png"));
-            sp = ImageIO.read(getClass().getResource("/res/player/snowwhite_punch.png"));
+            up1 = ImageIO.read(getClass().getResource("/res/player/jumpleft_moana.png"));
+            up2 = ImageIO.read(getClass().getResource("/res/player/jumpright_moana.png"));
+            left1 = ImageIO.read(getClass().getResource("/res/player/leftwalk1_moana.png"));
+            left2 = ImageIO.read(getClass().getResource("/res/player/leftwalk2_moana.png"));
+            right1 = ImageIO.read(getClass().getResource("/res/player/rightwalk1_moana.png"));
+            right2 = ImageIO.read(getClass().getResource("/res/player/rightwalk2_moana.png"));
+            leftidle = ImageIO.read(getClass().getResource("/res/player/idle_moana.png"));
+            rightidle = ImageIO.read(getClass().getResource("/res/player/idle_moana.png"));
+            punch = ImageIO.read(getClass().getResource("/res/player/punchright_moana.png"));
+            kick = ImageIO.read(getClass().getResource("/res/player/punchright_moana.png"));
+            sp = ImageIO.read(getClass().getResource("/res/player/special_moana.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -214,6 +215,7 @@ public class Player extends Entity {
 
     public void handleJump() {
         if (isJumping) {
+//            gp.sound.playSE(2);
             worldY -= speed * 4;
             if (worldY <= jumpStartY - jumpHeight) {
                 isJumping = false;
@@ -257,7 +259,15 @@ public class Player extends Entity {
             }
         }
 
-        g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
+        if(direction == "sp"){
+            g2.drawImage(image, worldX, worldY, gp.tileSize * 3, gp.tileSize * 2, null);
+        }else{
+            g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
+        }
+
+
+
+
         if (healthIcon != null && healthIcon.image != null) {
             g2.drawImage(healthIcon.image, 30, -150, gp.tileSize * 8, gp.tileSize * 8, null);
         }

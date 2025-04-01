@@ -38,6 +38,11 @@ public class Ui {
         if(gp.gameState == gp.winState){
             drawWinScreen();
         }
+
+        if (gp.gameState == gp.choosingState) {
+            drawChoosingScreen();
+        }
+
     }
 
     public void drawPauseScreen(){
@@ -108,7 +113,7 @@ public class Ui {
             g2.drawString(">", x-gp.tileSize, y);
         }
 
-    text = "ABOUT US";
+    text = "MENU";
     x = getXCenter(text);
     y += gp.tileSize;
     g2.drawString(text, x, y);
@@ -116,7 +121,7 @@ public class Ui {
             g2.drawString(">", x-gp.tileSize, y);
         }
 
-        text = "MENU";
+        text = "ABOUT US";
         x = getXCenter(text);
         y += gp.tileSize;
         g2.drawString(text, x, y);
@@ -137,8 +142,8 @@ public class Ui {
         g2.setColor(Color.black);
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,76F));
-        String text = "CHOOSE YOUR PRINCESS";
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 42F));
+        String text = "CHOOSE YOUR MODE";
         int x = getXCenter(text);
         int y = gp.screenHeight/4;
 
@@ -153,28 +158,32 @@ public class Ui {
         //Menu
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
 
-        text = "Snow White";
-        x = getXCenter(text)/2;
+        text = "PLAYER VS NPC";
+        x = getXCenter(text);
         y += gp.tileSize*4;
         g2.drawString(text, x, y);
+        if(commandNum == 0){
+            g2.drawString(">", x-gp.tileSize, y);
+        }
 
 
-        text = "Cinderella";
-        x = x - 20;
+        text = "PLAYER VS PLAYER";
+        x = getXCenter(text);
         y += gp.tileSize;
         g2.drawString(text, x, y);
+        if(commandNum == 1){
+            g2.drawString(">", x-gp.tileSize, y);
+        }
 
 
-        text = "Moana";
-        x = x - 20;
+        text = "EXIT";
+        x = getXCenter(text);
         y += gp.tileSize;
         g2.drawString(text, x, y);
-
-
-        text = "Mulan";
-        x = x - 20;
-        y += gp.tileSize;
-        g2.drawString(text, x, y);
-
+        if(commandNum == 2){
+            g2.drawString(">", x-gp.tileSize, y);
+        }
     }
+
+
 }

@@ -20,6 +20,37 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
+        if( gp.gameState == gp.choosingState){
+
+            if (code == KeyEvent.VK_W) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 0){
+                    gp.ui.commandNum = 2;
+                }
+            }
+            if (code == KeyEvent.VK_S) {
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 2){
+                    gp.ui.commandNum = 0;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum == 0){
+                    gp.gameState = gp.playState;
+                }
+
+                if(gp.ui.commandNum == 1){
+
+                }
+
+                if(gp.ui.commandNum == 2){
+                gp.gameState = gp.tileState;
+                }
+            }
+        }
+
+
         if( gp.gameState == gp.tileState){
 
             if (code == KeyEvent.VK_W) {
@@ -37,7 +68,7 @@ public class KeyHandler implements KeyListener {
 
             if (code == KeyEvent.VK_ENTER) {
                 if(gp.ui.commandNum == 0){
-                    gp.gameState = gp.playState;
+                    gp.gameState = gp.choosingState;
                 }
 
                 if(gp.ui.commandNum == 1){
