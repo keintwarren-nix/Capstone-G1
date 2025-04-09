@@ -2,6 +2,7 @@ package main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import entity.Dummy;
 
 public class KeyHandler implements KeyListener {
 
@@ -21,24 +22,28 @@ public class KeyHandler implements KeyListener {
         int code = e.getKeyCode();
 
         if(gp.gameState == gp.chooseCharacterState){
+            gp.ui.commandAbt = 0;
             if(code == KeyEvent.VK_A){
-            gp.ui.commandNum--;
-            if(gp.ui.commandNum < 0){
-                gp.ui.commandNum = 0;
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum < 1){
+                    gp.ui.commandNum = 1;
                 }
             }
 
             if(code == KeyEvent.VK_D){
-            gp.ui.commandNum++;
-            if(gp.ui.commandNum > 8){
-                gp.ui.commandNum = 8;
+                gp.ui.commandNum++;
+                if(gp.ui.commandNum > 8){
+                    gp.ui.commandNum = 8;
                 }
             }
 
             if (code == KeyEvent.VK_ENTER) {
-                if(gp.ui.commandNum != 9){
-                    gp.ui.characterChoice = gp.ui.commandNum;
-                    gp.ui.commandAbt = gp.ui.commandNum;
+                if(gp.ui.commandAbt == 0){
+                    gp.cchoice = gp.ui.commandNum;  // Use commandNum directly as the choice
+                    gp.player.getPlayerImage(gp.cchoice);  // Update player image
+                    // Create a new dummy with the current game panel (contains updated choice)
+                    gp.dummy = new Dummy(gp);
+                    gp.gameState = gp.playState;
                 }
             }
         }
@@ -59,7 +64,7 @@ public class KeyHandler implements KeyListener {
 
             if (code == KeyEvent.VK_ENTER) {
                 if(gp.ui.commandNum == 0){
-                    gp.gameState = gp.playState;
+                    gp.gameState = gp.chooseCharacterState;
                 }
 
                 if(gp.ui.commandNum == 1){
@@ -249,6 +254,28 @@ public class KeyHandler implements KeyListener {
                 }
             }
         }
+
+
+        if (gp.gameState == gp.roundTransitionState) {
+            if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+                // Skip the rest of the transition and start the next round immediately
+                if (gp.roundManager.getPlayerWins() >= (gp.roundManager.getMaxRounds() / 2 + 1)) {
+                    gp.gameState = gp.winState;
+                } else if (gp.roundManager.getDummyWins() >= (gp.roundManager.getMaxRounds() / 2 + 1)) {
+                    gp.gameState = gp.gameOverState;
+                } else {
+                    gp.roundManager.startNewRound();
+                }
+            }
+        }
+
+        // In your win state / game over state handling, update to restart the entire match
+        else if (gp.gameState == gp.winState || gp.gameState == gp.gameOverState) {
+            if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+                gp.restart(); // This will now start a new match with rounds
+            }
+        }
+
 
         // Handle different key presses based on game state
         if (gp.gameState == gp.playState) {

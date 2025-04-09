@@ -6,13 +6,12 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public interface Character{
-    int cchoice = 0;
 
-    default void getPlayerImage() {
+    default void getPlayerImage(int choice) {
 
     }
 
-    default void getDummy() {
+    default void getDummy(int choice) {
 
     }
 //

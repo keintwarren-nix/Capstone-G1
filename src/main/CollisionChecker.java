@@ -54,7 +54,7 @@ public class CollisionChecker {
         }
     }
 
-    // NEW: Check collision between Player and Dummy
+    // Check collision between Player and Dummy
     public void checkEntity(Entity entity, Entity target) {
         int entityLeftX = entity.worldX + entity.solidArea.x;
         int entityRightX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
@@ -72,5 +72,36 @@ public class CollisionChecker {
                 entityTopY < targetBottomY) {
             entity.collisionOn = true; // Collision detected
         }
+    }
+
+    // New method to check and enforce screen boundaries
+    public void checkScreenBoundaries(Entity entity) {
+        // Get screen boundaries
+        int leftBoundary = 0;
+        int rightBoundary = gp.screenWidth - (gp.tileSize * 2); // Account for entity width (2 tiles)
+
+        // Check and correct X position
+        if (entity.worldX < leftBoundary) {
+            entity.worldX = leftBoundary;
+            entity.collisionOn = true;
+        }
+        if (entity.worldX > rightBoundary) {
+            entity.worldX = rightBoundary;
+            entity.collisionOn = true;
+        }
+
+        // For a fighting game, we typically only restrict horizontal movement
+        // but you can add vertical restrictions if needed:
+
+        // int topBoundary = 0;
+        // int bottomBoundary = gp.screenHeight - (gp.tileSize * 2);
+        // if (entity.worldY < topBoundary) {
+        //     entity.worldY = topBoundary;
+        //     entity.collisionOn = true;
+        // }
+        // if (entity.worldY > bottomBoundary) {
+        //     entity.worldY = bottomBoundary;
+        //     entity.collisionOn = true;
+        // }
     }
 }

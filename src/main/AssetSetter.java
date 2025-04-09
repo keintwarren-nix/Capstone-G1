@@ -1,7 +1,5 @@
 package main;
 
-import object.Icon;
-
 public class AssetSetter {
     GamePanel gp;
 
@@ -9,9 +7,4 @@ public class AssetSetter {
         this.gp = gp;
     }
 
-    public void setObject() {
-        gp.obj[0] = new Icon();
-        gp.obj[0].worldX = 400;
-        gp.obj[0].worldY = 4;
-    }
 }

@@ -3,7 +3,7 @@ package main;
 import java.awt.*;
 import javax.swing.ImageIcon;
 
-public class Ui {
+public class  Ui {
 
     GamePanel gp;
     Font arial_40;
@@ -15,6 +15,8 @@ public class Ui {
     private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8;
     private Image pfpEff1, pfpEff12, pfpEff2, pfpEff3, pfpEff32, pfpEff4, pfpEff5, pfpEff6, pfpEff7, pfpEff8;
 
+    private Image icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, AI;
+    private Image descChar1, descChar2, descChar3, descChar4, descChar5, descChar6, descChar7, descChar8;
 
     public Ui(GamePanel gp) {
         this.gp = gp;
@@ -61,7 +63,6 @@ public class Ui {
         ImageIcon profileTiana = new ImageIcon(getClass().getResource("/res/background/TianaProfile.png"));
         ImageIcon profileSnowWhite = new ImageIcon(getClass().getResource("/res/background/SnowWhiteProfile.png"));
 
-
         profile1 = profileAriel.getImage();
         profile2 = profileCinderella.getImage();
         profile3 = profileElsa.getImage();
@@ -71,32 +72,67 @@ public class Ui {
         profile7 = profileTiana.getImage();
         profile8 = profileRapunzel.getImage();
 
+        ImageIcon descEff1 = new ImageIcon(getClass().getResource("/res/objects/descAriel.png"));
+        ImageIcon descEff2 = new ImageIcon(getClass().getResource("/res/objects/descCinderella.png"));
+        ImageIcon descEff3 = new  ImageIcon(getClass().getResource("/res/objects/descElsa.png"));
+        ImageIcon descEff4 = new  ImageIcon(getClass().getResource("/res/objects/descMoana.png"));
+        ImageIcon descEff5 = new  ImageIcon(getClass().getResource("/res/objects/descMulan.png"));
+        ImageIcon descEff6 = new  ImageIcon(getClass().getResource("/res/objects/descSnowWhite.png"));
+        ImageIcon descEff7 = new  ImageIcon(getClass().getResource("/res/objects/descTiana.png"));
+        ImageIcon descEff8 = new  ImageIcon(getClass().getResource("/res/objects/descRapunzel.png"));
+
+        descChar1 = descEff1.getImage();
+        descChar2 = descEff2.getImage();
+        descChar3 = descEff3.getImage();
+        descChar4 = descEff4.getImage();
+        descChar5 = descEff5.getImage();
+        descChar6 = descEff6.getImage();
+        descChar7 = descEff7.getImage();
+        descChar8 = descEff8.getImage();
+
         ImageIcon profileEff1 = new ImageIcon(getClass().getResource("/res/background/PfpEffectAriel.gif"));
         ImageIcon profileEff12 = new ImageIcon(getClass().getResource("/res/background/PfpEffectAriel2.gif"));
-        ImageIcon profileEff2 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectCinderella.gif"));
-        ImageIcon profileEff3 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectElsa.gif"));
-        ImageIcon profileEff32 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectElsa2.gif"));
-        ImageIcon profileEff4 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectMoana.gif"));
-        ImageIcon profileEff5 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectMulan.gif"));
-        ImageIcon profileEff6 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectSnowWhite.gif"));
-        ImageIcon profileEff7 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectTiana.gif"));
-        ImageIcon profileEff8 = new  ImageIcon(getClass().getResource("/res/background/PfpEffectRapunzel.gif"));
-
-
+        ImageIcon profileEff2 = new ImageIcon(getClass().getResource("/res/background/PfpEffectCinderella.gif"));
+        ImageIcon profileEff22 = new ImageIcon(getClass().getResource("/res/background/PfpEffectCinderella2.gif"));
+        ImageIcon profileEff3 = new ImageIcon(getClass().getResource("/res/background/PfpEffectElsa.gif"));
+        ImageIcon profileEff32 = new ImageIcon(getClass().getResource("/res/background/PfpEffectElsa2.gif"));
+        ImageIcon profileEff4 = new ImageIcon(getClass().getResource("/res/background/PfpEffectMoana.gif"));
+        ImageIcon profileEff5 = new ImageIcon(getClass().getResource("/res/background/PfpEffectMulan.gif"));
+        ImageIcon profileEff6 = new ImageIcon(getClass().getResource("/res/background/PfpEffectSnowWhite.gif"));
+        ImageIcon profileEff7 = new ImageIcon(getClass().getResource("/res/background/PfpEffectTiana.gif"));
+        ImageIcon profileEff8 = new ImageIcon(getClass().getResource("/res/background/PfpEffectRapunzel.gif"));
 
         pfpEff1 = profileEff1.getImage();
         pfpEff12 = profileEff12.getImage();
-
         pfpEff2 = profileEff2.getImage();
         pfpEff3 = profileEff3.getImage();
         pfpEff32 = profileEff32.getImage();
-
         pfpEff4 = profileEff4.getImage();
         pfpEff5 = profileEff5.getImage();
         pfpEff6 = profileEff6.getImage();
         pfpEff7 = profileEff7.getImage();
         pfpEff8 = profileEff8.getImage();
 
+        ImageIcon icon_1 = new ImageIcon(getClass().getResource("/res/objects/Ariel_Icon.png"));
+        ImageIcon icon_2 = new ImageIcon(getClass().getResource("/res/objects/Cinderella_Icon.png"));
+        ImageIcon icon_3 = new ImageIcon(getClass().getResource("/res/objects/Elsa_Icon.png"));
+        ImageIcon icon_4 = new ImageIcon(getClass().getResource("/res/objects/Moana_Icon.png"));
+        ImageIcon icon_5 = new ImageIcon(getClass().getResource("/res/objects/Mulan_Icon.png"));
+        ImageIcon icon_6 = new ImageIcon(getClass().getResource("/res/objects/SnowWhite_Icon.png"));
+        ImageIcon icon_7 = new ImageIcon(getClass().getResource("/res/objects/Tiana_Icon.png"));
+        ImageIcon icon_8 = new ImageIcon(getClass().getResource("/res/objects/Rapunzel_Icon.png"));
+
+        ImageIcon ai = new ImageIcon(getClass().getResource("/res/objects/placeholder.jpg"));
+
+        AI = ai.getImage();
+        icon1 = icon_1.getImage();
+        icon2 = icon_2.getImage();
+        icon3 = icon_3.getImage();
+        icon4 = icon_4.getImage();
+        icon5 = icon_5.getImage();
+        icon6 = icon_6.getImage();
+        icon7 = icon_7.getImage();
+        icon8 = icon_8.getImage();
 
     }
 
@@ -114,7 +150,40 @@ public class Ui {
         }
 
         if(gp.gameState == gp.playState){
-            // Gameplay UI elements could go here
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRoundRect(290,  0, 200, 100, 30, 30);
+            drawRoundInfo(g2);
+
+            g2.drawImage(AI, 590, 10, 120, 120, null);
+
+            switch(characterChoice){
+                case 1:
+                    g2.drawImage(profile1, -10, 10, 150, 150, null);
+                    break;
+                case 2:
+                    g2.drawImage(profile2, -10, 10, 150, 150, null);
+                    break;
+                case 3:
+                    g2.drawImage(profile3, -10, 10, 150, 150, null);
+                    break;
+                case 4:
+                    g2.drawImage(profile4, -10, 10, 150, 150, null);
+                    break;
+                case 5:
+                    g2.drawImage(profile5, -10, 10, 150, 150, null);
+                    break;
+                case 6:
+                    g2.drawImage(profile6, -10, 10, 150, 150, null);
+                    break;
+                case 7:
+                    g2.drawImage(profile7, -10, 10, 150, 150, null);
+                    break;
+                case 8:
+                    g2.drawImage(profile8, -10, 10, 150, 150, null);
+                    break;
+            }
+
+
         }
 
         if(gp.gameState == gp.pauseState){
@@ -189,9 +258,80 @@ public class Ui {
             drawRapunzel();
         }
 
+        if(gp.gameState == gp.roundTransitionState) {
+            drawRoundTransition(g2);
+        }
+
+    }
+
+    public void drawRoundInfo(Graphics2D g2) {
+        g2.setColor(Color.WHITE);
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+
+        // Draw round number
+        String roundText = "ROUND " + gp.roundManager.getCurrentRound() + "/" + gp.roundManager.getMaxRounds();
+        g2.drawString(roundText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(roundText)/2, 30);
+
+        // Draw score
+        String scoreText = "PLAYER " + gp.roundManager.getPlayerWins() + " - " + gp.roundManager.getDummyWins() + " CPU";
+        g2.drawString(scoreText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(scoreText)/2, 60);
+
+        // Draw timer
+        String timeText = String.format("%02d", gp.roundManager.getRemainingTime());
+        g2.drawString(timeText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(timeText)/2, 90);
+    }
+
+    public void drawRoundTransition(Graphics2D g2) {
+        g2.setColor(new Color(0, 0, 0, 200)); // Semi-transparent black background
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        g2.setColor(Color.WHITE);
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 40F));
+
+        // Determine the round result text
+        String resultText;
+        if (gp.player.health <= 0) {
+            resultText = "YOU LOSE ROUND " + gp.roundManager.getCurrentRound();
+        } else if (gp.dummy.health <= 0) {
+            resultText = "YOU WIN ROUND " + gp.roundManager.getCurrentRound();
+        } else {
+            // Time up scenario
+            float playerHealthPercent = gp.player.health / 100f;
+            float dummyHealthPercent = gp.dummy.health / 100f;
+
+            if (playerHealthPercent > dummyHealthPercent) {
+                resultText = "YOU WIN ROUND " + gp.roundManager.getCurrentRound();
+            } else if (dummyHealthPercent > playerHealthPercent) {
+                resultText = "YOU LOSE ROUND " + gp.roundManager.getCurrentRound();
+            } else {
+                resultText = "ROUND " + gp.roundManager.getCurrentRound() + " DRAW";
+            }
+        }
+
+        // Draw round result
+        int y = gp.screenHeight/2 - 80;
+        g2.drawString(resultText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(resultText)/2, y);
+
+        // Draw score
+        String scoreText = "SCORE: PLAYER " + gp.roundManager.getPlayerWins() + " - " + gp.roundManager.getDummyWins() + " CPU";
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
+        y += 60;
+        g2.drawString(scoreText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(scoreText)/2, y);
+
+        // Draw "Next round starting..." or "Match over" message
+        String nextText;
+        if (gp.roundManager.getPlayerWins() >= (gp.roundManager.getMaxRounds() / 2 + 1) || gp.roundManager.getDummyWins() >= (gp.roundManager.getMaxRounds() / 2 + 1)) {
+            nextText = "MATCH OVER";
+        } else {
+            nextText = "NEXT ROUND STARTING...";
+        }
+
+        y += 60;
+        g2.drawString(nextText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(nextText)/2, y);
     }
 
     public void drawRapunzel() {
+        characterChoice = 8;
         g2.drawImage(back8, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(pfpEff8, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(profile8, -175, 25, 720, 600, null);
@@ -230,6 +370,7 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX-30, descY);
+        g2.drawImage(descChar8, descX-60, descY, 260, 260, null);
 
 
         // BACK button
@@ -261,13 +402,14 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX+30, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 20, backY);
         }
 
 }
 
     public void drawTiana() {
+        characterChoice = 7;
         g2.drawImage(back7, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(pfpEff7, 330, 460, gp.tileSize*3, gp.tileSize*3, null);
         g2.drawImage(profile7, -150, 60, 640, 520, null);
@@ -305,7 +447,7 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX-30, descY);
-
+        g2.drawImage(descChar7, descX-60, descY, 260, 260, null);
 
         // BACK button
         String backText = "BACK";
@@ -323,7 +465,6 @@ public class Ui {
             g2.drawString(">", backX - 40, backY);
         }
 
-
         // BACK button
         String chooseText = "CHOOSE";
         int chooseX = x;
@@ -336,8 +477,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 40, backY);
         }
 
         // NEXT button
@@ -358,6 +499,7 @@ public class Ui {
     }
 
     public void drawSnowWhite() {
+        characterChoice = 6;
         g2.drawImage(back6, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(pfpEff6, 150, 300, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(pfpEff6, -175, 300, gp.screenWidth, gp.screenHeight, null);
@@ -393,10 +535,10 @@ public class Ui {
 
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRoundRect(420, descY - descHeight, descWidth + 40, descWidth + 70, 30, 30);
+        g2.drawImage(descChar6, descX-60, descY, 260, 260, null);
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX-30, descY);
-
 
         // BACK button
         String backText = "BACK";
@@ -414,7 +556,6 @@ public class Ui {
             g2.drawString(">", backX - 40, backY);
         }
 
-
         // BACK button
         String chooseText = "CHOOSE";
         int chooseX = x;
@@ -427,8 +568,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX+28, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 20, backY);
         }
 
         // NEXT button
@@ -449,6 +590,7 @@ public class Ui {
     }
 
     public void drawnMulan() {
+        characterChoice = 5;
         g2.drawImage(back5, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(pfpEff5, 0, 150, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(profile5, -100, 60, 640, 520, null);
@@ -483,6 +625,7 @@ public class Ui {
 
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRoundRect(420, descY - descHeight, descWidth + 40, descWidth + 70, 30, 30);
+        g2.drawImage(descChar5, descX-60, descY, 260, 260, null);
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX-30, descY);
@@ -517,8 +660,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 40, backY);
         }
 
         // NEXT button
@@ -539,6 +682,7 @@ public class Ui {
     }
 
     public void drawMoana() {
+        characterChoice = 4;
         g2.drawImage(back4, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.drawImage(pfpEff4, 190, 290, gp.screenWidth/2, gp.screenHeight/2, null);
         g2.drawImage(profile4, -175, 25, 720, 600, null);
@@ -578,7 +722,7 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX-25, descY);
-
+        g2.drawImage(descChar4, descX-60, descY, 260, 260, null);
 
         // BACK button
         String backText = "BACK";
@@ -609,8 +753,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 40, backY);
         }
 
         // NEXT button
@@ -631,6 +775,7 @@ public class Ui {
     }
 
     public void drawElsa() {
+        characterChoice = 3;
         g2.drawImage(back3, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
         g2.drawImage(pfpEff3, 0, 400, gp.screenWidth/-2, gp.screenHeight/2, null);
@@ -681,7 +826,7 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX, descY);
-
+        g2.drawImage(descChar3, descX-30, descY, 260, 260, null);
 
         // BACK button
         String backText = "BACK";
@@ -712,8 +857,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 40, backY);
         }
 
         // NEXT button
@@ -734,6 +879,7 @@ public class Ui {
     }
 
     public void drawCinderella() {
+        characterChoice = 2;
         g2.drawImage(back2, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
 //        g2.drawImage(pfpEff12, 0, 0, gp.screenWidth/2, gp.screenHeight/2, null);
@@ -777,6 +923,7 @@ public class Ui {
 
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRoundRect(450, descY - descHeight, descWidth + 40, descWidth + 70, 30, 30);
+        g2.drawImage(descChar2, descX-30, descY, 260, 260, null);
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX, descY);
@@ -811,8 +958,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX + 40, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX, backY);
         }
 
         // NEXT button
@@ -833,6 +980,7 @@ public class Ui {
     }
 
     public void drawAriel() {
+        characterChoice = 1;
         g2.drawImage(back1, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
         g2.drawImage(pfpEff12, 0, 0, gp.screenWidth/2, gp.screenHeight/2, null);
@@ -876,9 +1024,11 @@ public class Ui {
 
         g2.setColor(new Color(0, 0, 0, 150));
         g2.fillRoundRect(450, descY - descHeight, descWidth + 40, descWidth + 70, 30, 30);
+        g2.drawImage(descChar1, descX-30, descY, 260, 260, null);
 
         g2.setColor(Color.white);
         g2.drawString(Description, descX, descY);
+
 
 
         // BACK button
@@ -910,8 +1060,8 @@ public class Ui {
 
         g2.setColor(Color.white);
         g2.drawString(chooseText, chooseX, chooseY);
-        if (commandAbt == 2) {
-            g2.drawString(">", backX - 40, backY);
+        if (commandAbt == 0) {
+            g2.drawString(">", chooseX - 40, backY);
         }
 
         // NEXT button
@@ -1060,6 +1210,7 @@ public class Ui {
     }
 
     public void drawChooseCharacterScreen() {
+        drawAriel();
         switch(commandNum){
             case 1:
                 drawAriel();

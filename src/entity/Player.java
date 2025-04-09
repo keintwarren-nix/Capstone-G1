@@ -32,9 +32,11 @@ public class Player extends Entity implements Character{
         this.keyH = keyH;
         solidArea = new Rectangle(8, 16, 32, 16);
         setDefaultValues();
-        getPlayerImage();
+        // Get player image using GamePanel's character choice
+        getPlayerImage(gp.cchoice);
         loadHealthImages();
         healthIcon = new Health();
+        updateHealthIcon();
         deathEffect = new DeathEffect(gp, this);
     }
 
@@ -48,22 +50,126 @@ public class Player extends Entity implements Character{
     }
 
     @Override
-    public void getPlayerImage() {
+    public void getPlayerImage(int choice) {
         try {
-            up1 = ImageIO.read(getClass().getResource("/res/player/jumpleft_moana.png"));
-            up2 = ImageIO.read(getClass().getResource("/res/player/jumpright_moana.png"));
-            left1 = ImageIO.read(getClass().getResource("/res/player/leftwalk1_moana.png"));
-            left2 = ImageIO.read(getClass().getResource("/res/player/leftwalk2_moana.png"));
-            right1 = ImageIO.read(getClass().getResource("/res/player/rightwalk1_moana.png"));
-            right2 = ImageIO.read(getClass().getResource("/res/player/rightwalk2_moana.png"));
-            leftidle = ImageIO.read(getClass().getResource("/res/player/idle_moana.png"));
-            rightidle = ImageIO.read(getClass().getResource("/res/player/idle_moana.png"));
-            punch = ImageIO.read(getClass().getResource("/res/player/punchright_moana.png"));
-            kick = ImageIO.read(getClass().getResource("/res/player/punchright_moana.png"));
-            sp = ImageIO.read(getClass().getResource("/res/player/special_moana.png"));
+
+            if (choice == 0) {
+                choice = 1; // Default to character 1 if no choice was made
+            }
+
+            switch (choice) {
+                case 1:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch1_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch1_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch1_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch1_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch1_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch1_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch1_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch1_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch1_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch1_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch1_sp.png"));
+                    break;
+//                case 2:
+//                    up1 = ImageIO.read(getClass().getResource("/res/player/ch2_jleft.png"));
+//                    up2 = ImageIO.read(getClass().getResource("/res/player/ch2_jright.png"));
+//                    left1 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk1.png"));
+//                    left2 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk2.png"));
+//                    right1 = ImageIO.read(getClass().getResource("/res/player/ch2_rwalk1.png"));
+//                    right2 = ImageIO.read(getClass().getResource("/res/player/ch2_rwalk2.png"));
+//                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch2_idle.png"));
+//                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch2_idle.png"));
+//                    punch = ImageIO.read(getClass().getResource("/res/player/ch2_rpunch.png"));
+//                    kick = ImageIO.read(getClass().getResource("/res/player/ch2_rkick.png"));
+//                    sp = ImageIO.read(getClass().getResource("/res/player/ch2_sp.png"));
+//                    break;
+                case 3:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch3_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch3_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch3_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch3_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch3_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch3_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch3_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch3_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch3_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch3_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch3_sp.png"));
+                    break;
+                case 4:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch4_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch4_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch4_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch4_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch4_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch4_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch4_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch4_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch4_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch4_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch4_sp.png"));
+                    break;
+//                case 5:
+//                    up1 = ImageIO.read(getClass().getResource("/res/player/ch5_jleft.png"));
+//                    up2 = ImageIO.read(getClass().getResource("/res/player/ch5_jright.png"));
+//                    left1 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk1.png"));
+//                    left2 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk2.png"));
+//                    right1 = ImageIO.read(getClass().getResource("/res/player/ch5_rwalk1.png"));
+//                    right2 = ImageIO.read(getClass().getResource("/res/player/ch5_rwalk2.png"));
+//                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch5_idle.png"));
+//                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch5_idle.png"));
+//                    punch = ImageIO.read(getClass().getResource("/res/player/ch5_rpunch.png"));
+//                    kick = ImageIO.read(getClass().getResource("/res/player/ch5_rkick.png"));
+//                    sp = ImageIO.read(getClass().getResource("/res/player/ch5_sp.png"));
+//                    break;
+                case 6:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch6_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch6_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch6_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch6_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch6_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch6_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch6_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch6_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch6_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch6_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch6_sp.png"));
+                    break;
+                case 7:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch7_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch7_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch7_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch7_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch7_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch7_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch7_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch7_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch7_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch7_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch7_sp.png"));
+                    break;
+                case 8:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch8_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch8_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch8_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch8_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch8_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch8_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch8_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch8_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch8_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch8_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch8_sp.png"));
+                    break;
+                default:
+                    System.out.println("Invalid player choice: " + choice);
+                    break;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void loadHealthImages() {
@@ -167,6 +273,8 @@ public class Player extends Entity implements Character{
         } else {
             bounceBack(prevDirection);
         }
+
+        gp.cChecker.checkScreenBoundaries(this);
     }
 
     public void movePlayer() {
@@ -273,7 +381,7 @@ public class Player extends Entity implements Character{
 
 
         if (healthIcon != null && healthIcon.image != null) {
-            g2.drawImage(healthIcon.image, 30, -150, gp.tileSize * 8, gp.tileSize * 8, null);
+            g2.drawImage(healthIcon.image, 30, -120, gp.tileSize * 8, gp.tileSize * 8, null);
         }
     }
 

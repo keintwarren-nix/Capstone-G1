@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
-public class Dummy extends Entity implements Character{
+public class Dummy extends Entity implements Character {
 
     GamePanel gp;
     BufferedImage image;
@@ -24,7 +24,6 @@ public class Dummy extends Entity implements Character{
     int attackCooldown = 1500;
     long lastAttackTime = System.currentTimeMillis();
     Random random = new Random();
-
     boolean isAttacking = false;
     long attackAnimationTime = 300;
     long attackAnimationStartTime = 0;
@@ -39,24 +38,118 @@ public class Dummy extends Entity implements Character{
         worldX = 550;
         worldY = 420;
         solidArea = new Rectangle(8, 16, 32, 16);
-        getDummy();
+
+        // Get a random character choice from 1, 3, 4, 7, 8
+        int randomChoice = getRandomCharacterChoice();
+        getDummy(randomChoice);
+
         loadHealthImages();
         healthIcon = new Health();
         updateHealthIcon();
         deathEffect = new DeathEffect(gp, this);
     }
 
+    // This method returns a random character choice (1, 3, 4, 7, 8)
+    public int getRandomCharacterChoice() {
+        int[] possibleChoices = {1, 3, 4,6, 7, 8};
+        Random random = new Random();
+        int randomIndex = random.nextInt(possibleChoices.length); // Generate a random index
+        return possibleChoices[randomIndex]; // Return a random choice from the array
+    }
+
     @Override
-    public void getDummy() {
+    public void getDummy(int choice) {
         try {
-            left1 = ImageIO.read(getClass().getResource("/res/player/cinderella_leftwalk_1.png"));
-            left2 = ImageIO.read(getClass().getResource("/res/player/cinderella_leftwalk_2.png"));
-            right1 = ImageIO.read(getClass().getResource("/res/player/cinderella_rightwalk_1.png"));
-            right2 = ImageIO.read(getClass().getResource("/res/player/cinderella_rightwalk_2.png"));
-            leftidle = ImageIO.read(getClass().getResource("/res/player/cinderella_idle_left.png"));
-            rightidle = ImageIO.read(getClass().getResource("/res/player/cinderella_idle_right.png"));
-            punch = ImageIO.read(getClass().getResource("/res/player/cinder_punch_left.png"));
-            kick = ImageIO.read(getClass().getResource("/res/player/snowwhite_kick.png"));
+            // If choice is 0 (default), use a fallback choice
+            if (choice == 0) {
+                choice = 1; // Default to character 1 if no choice was made
+            }
+
+            switch (getRandomCharacterChoice()) {
+                case 1:
+                    up1 = ImageIO.read(getClass().getResource("/res/npc/ch1_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/npc/ch1_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/npc/ch1_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/npc/ch1_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/npc/ch1_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/npc/ch1_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/npc/ch1_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/npc/ch1_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch1_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch1_lkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/npc/ch1_sp.png"));
+                    break;
+                case 3:
+                    up1 = ImageIO.read(getClass().getResource("/res/npc/ch3_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/npc/ch3_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/npc/ch3_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/npc/ch3_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/npc/ch3_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/npc/ch3_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/npc/ch3_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/npc/ch3_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch3_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch3_lkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/npc/ch3_sp.png"));
+                    break;
+                case 4:
+                    up1 = ImageIO.read(getClass().getResource("/res/npc/ch4_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/npc/ch4_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/npc/ch4_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/npc/ch4_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/npc/ch4_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/npc/ch4_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/npc/ch4_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/npc/ch4_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch4_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch4_lkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/npc/ch4_sp.png"));
+                    break;
+                case 6:
+                    up1 = ImageIO.read(getClass().getResource("/res/npc/ch6_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/npc/ch6_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/npc/ch6_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/npc/ch6_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/npc/ch6_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/npc/ch6_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/npc/ch6_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/npc/ch6_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch6_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch6_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/npc/ch6_sp.png"));
+                    break;
+                case 7:
+                    up1 = ImageIO.read(getClass().getResource("/res/npc/ch7_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/npc/ch7_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/npc/ch7_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/npc/ch7_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/npc/ch7_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/npc/ch7_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/npc/ch7_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/npc/ch7_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch7_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch7_lkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/npc/ch7_sp.png"));
+                    break;
+                case 8:
+                    up1 = ImageIO.read(getClass().getResource("/res/npc/ch8_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/npc/ch8_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/npc/ch8_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/npc/ch8_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/npc/ch8_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/npc/ch8_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/npc/ch8_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/npc/ch8_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch8_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch8_lkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/npc/ch8_sp.png"));
+                    break;
+                default:
+                    // Fallback to character 1 if an unsupported choice is made
+                    System.out.println("Invalid NPC choice: " + choice + ", defaulting to character 1");
+                    getDummy(1);
+                    break;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,18 +172,17 @@ public class Dummy extends Entity implements Character{
     }
 
     public void updateHealthIcon() {
-
         if (health == 100) {
             healthIcon.image = healthImages[0];
         } else if (health <= 80 && health > 60) {
             healthIcon.image = healthImages[1];
-        }else if (health <= 60 && health > 40) {
+        } else if (health <= 60 && health > 40) {
             healthIcon.image = healthImages[2];
-        }else if (health <= 40 && health > 20) {
+        } else if (health <= 40 && health > 20) {
             healthIcon.image = healthImages[3];
-        }else if (health <= 20 && health > 0) {
+        } else if (health <= 20 && health > 0) {
             healthIcon.image = healthImages[4];
-        }else{
+        } else {
             healthIcon.image = healthImages[5];
             collisionOn = false;
         }
@@ -234,6 +326,7 @@ public class Dummy extends Entity implements Character{
         if (healthIcon != null && healthIcon.image != null) {
             int healthBarX = worldX + (gp.tileSize - gp.tileSize) / 2;
             int healthBarY = worldY - (gp.tileSize / 2) - 20;
-            g2.drawImage(healthIcon.image, 370, -150, gp.tileSize * 8, gp.tileSize * 8, null);        }
+            g2.drawImage(healthIcon.image, 350, -120, gp.tileSize * 8, gp.tileSize * 8, null);
+        }
     }
 }
