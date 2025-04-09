@@ -20,6 +20,29 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
+        if(gp.gameState == gp.chooseCharacterState){
+            if(code == KeyEvent.VK_A){
+            gp.ui.commandNum--;
+            if(gp.ui.commandNum < 0){
+                gp.ui.commandNum = 0;
+                }
+            }
+
+            if(code == KeyEvent.VK_D){
+            gp.ui.commandNum++;
+            if(gp.ui.commandNum > 8){
+                gp.ui.commandNum = 8;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if(gp.ui.commandNum != 9){
+                    gp.ui.characterChoice = gp.ui.commandNum;
+                    gp.ui.commandAbt = gp.ui.commandNum;
+                }
+            }
+        }
+
         if(gp.gameState == gp.choosingState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
@@ -49,6 +72,7 @@ public class KeyHandler implements KeyListener {
             }
         }
 
+
         if(gp.gameState == gp.tileState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
@@ -76,7 +100,6 @@ public class KeyHandler implements KeyListener {
 
                 if(gp.ui.commandNum == 2){
                     gp.gameState = gp.abState;
-                    gp.ui.commandNum = 1; // Set to 1 to highlight "BACK" in About Us screen
                     System.out.println("Changed to About Us state: " + gp.gameState); // Debug print
                 }
 
@@ -109,7 +132,6 @@ public class KeyHandler implements KeyListener {
 
                 if(gp.ui.commandNum == 2){
                     gp.gameState = gp.abState2;
-
                     gp.ui.commandNum = 0;
                 }
             }

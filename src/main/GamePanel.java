@@ -42,6 +42,17 @@ public class GamePanel extends JPanel implements Runnable {
     public final int abState3 = 9;
     public final int abState4 = 10;
     public final int abState5 = 11;
+    public final int settingState = 12;
+
+    public final int char1 = 21;
+    public final int char3 = 22;
+    public final int char2 = 23;
+    public final int char4 = 24;
+    public final int char5 = 25;
+    public final int char6 = 26;
+    public final int char7 = 27;
+    public final int char8 = 28;
+
 
     public tileManager tileM = new tileManager(this);
 
