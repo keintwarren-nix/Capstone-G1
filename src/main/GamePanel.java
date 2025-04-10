@@ -71,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Dummy dummy = new Dummy(this);
     public Player player = new Player(this, keyH);
 
-    private Image backgroundImage;
+    Image backgroundImage;
     public SuperObject obj[] = new SuperObject[10];
 
     public GamePanel() {
@@ -82,12 +82,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         roundManager = new RoundManager(this);
 
-        try {
-            backgroundImage = ImageIO.read(getClass().getResource("/res/background/forest.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
+
 
     public void startGameThread() {
         gameThread = new Thread(this);

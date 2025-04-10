@@ -22,17 +22,14 @@ public class RoundManager {
         gp.player.setDefaultValues();
         gp.player.getPlayerImage(gp.cchoice);
 
-        // Create a new dummy opponent
         gp.dummy = new entity.Dummy(gp);
 
-        // Reset round state
         roundEnded = false;
         roundStartTime = System.currentTimeMillis();
         gp.gameState = gp.playState;
     }
 
     public void startMatch() {
-        // Reset match stats
         currentRound = 1;
         playerWins = 0;
         dummyWins = 0;
@@ -41,21 +38,16 @@ public class RoundManager {
     }
 
     public void update() {
-        // Check if round has ended
         if (!roundEnded) {
-            // Check for round end conditions
             if (gp.player.health <= 0 || gp.dummy.health <= 0 || isTimeUp()) {
                 endRound();
             }
         } else if (!matchEnded) {
-            // Handle round transition
             if (System.currentTimeMillis() - roundEndTime >= roundTransitionDelay) {
                 if (playerWins >= (maxRounds / 2 + 1) || dummyWins >= (maxRounds / 2 + 1)) {
-                    // Match has ended - someone has won majority of rounds
                     matchEnded = true;
                     gp.gameState = playerWins > dummyWins ? gp.winState : gp.gameOverState;
                 } else {
-                    // Start next round
                     currentRound++;
                     startNewRound();
                 }

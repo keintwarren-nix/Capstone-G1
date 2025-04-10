@@ -15,7 +15,7 @@ public class  Ui {
     private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8;
     private Image pfpEff1, pfpEff12, pfpEff2, pfpEff3, pfpEff32, pfpEff4, pfpEff5, pfpEff6, pfpEff7, pfpEff8;
 
-    private Image icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, AI;
+    private Image icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, AI, keint, rafael, trixie, april, earl;
     private Image descChar1, descChar2, descChar3, descChar4, descChar5, descChar6, descChar7, descChar8;
 
     public Ui(GamePanel gp) {
@@ -122,9 +122,21 @@ public class  Ui {
         ImageIcon icon_7 = new ImageIcon(getClass().getResource("/res/objects/Tiana_Icon.png"));
         ImageIcon icon_8 = new ImageIcon(getClass().getResource("/res/objects/Rapunzel_Icon.png"));
 
-        ImageIcon ai = new ImageIcon(getClass().getResource("/res/objects/placeholder.jpg"));
+        ImageIcon ai = new ImageIcon(getClass().getResource("/res/objects/ai.png"));
+
+        ImageIcon k = new ImageIcon(getClass().getResource("/res/objects/keint.jpg"));
+        ImageIcon r = new ImageIcon(getClass().getResource("/res/objects/rafael.jpg"));
+        ImageIcon t = new ImageIcon(getClass().getResource("/res/objects/trixie.jpg"));
+        ImageIcon a = new ImageIcon(getClass().getResource("/res/objects/april.jpg"));
+        ImageIcon e = new ImageIcon(getClass().getResource("/res/objects/earl.jpg"));
 
         AI = ai.getImage();
+        keint = k.getImage();
+        rafael = r.getImage();
+        trixie = t.getImage();
+        april = a.getImage();
+        earl = e.getImage();
+
         icon1 = icon_1.getImage();
         icon2 = icon_2.getImage();
         icon3 = icon_3.getImage();
@@ -150,38 +162,82 @@ public class  Ui {
         }
 
         if(gp.gameState == gp.playState){
+
+            try {
+                if (characterChoice == 0) {
+                    characterChoice = 1; // Default to character 1 if no choice was made
+                }
+                switch (characterChoice) {
+                    case 1:
+                        ImageIcon a = new ImageIcon(getClass().getResource("/res/background/BackgroundAriel.gif"));
+                        gp.backgroundImage = a.getImage();
+                        break;
+                    case 2:
+                        ImageIcon b = new ImageIcon(getClass().getResource("/res/background/BackgroundCinderella.gif"));
+                        gp.backgroundImage = b.getImage();
+                        break;
+                    case 3:
+                        ImageIcon c = new ImageIcon(getClass().getResource("/res/background/BackgroundElsa.gif"));
+                        gp.backgroundImage = c.getImage();
+                        break;
+                    case 4:
+                        ImageIcon d = new ImageIcon(getClass().getResource("/res/background/BackgroundMoana.gif"));
+                       gp.backgroundImage = d.getImage();
+                        break;
+                    case 5:
+                        ImageIcon e = new ImageIcon(getClass().getResource("/res/background/BackgroundMulan.gif"));
+                        gp.backgroundImage = e.getImage();
+                        break;
+                    case 6:
+                        ImageIcon f = new ImageIcon(getClass().getResource("/res/background/BackgroundSnowWhite.gif"));
+                        gp.backgroundImage = f.getImage();
+                        break;
+                    case 7:
+                        ImageIcon g = new ImageIcon(getClass().getResource("/res/background/BackgroundTiana.gif"));
+                        gp.backgroundImage = g.getImage();
+                        break;
+                    case 8:
+                        ImageIcon h = new ImageIcon(getClass().getResource("/res/background/BackgroundRapunzel.gif"));
+                        gp.backgroundImage = h.getImage();
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRoundRect(290,  0, 200, 100, 30, 30);
             drawRoundInfo(g2);
 
-            g2.drawImage(AI, 590, 10, 120, 120, null);
+            g2.drawImage(AI, 660, 500, 75, 75, null);
 
             switch(characterChoice){
                 case 1:
-                    g2.drawImage(profile1, -10, 10, 150, 150, null);
+                    g2.drawImage(profile1, -10, 480, 150, 150, null);
                     break;
                 case 2:
-                    g2.drawImage(profile2, -10, 10, 150, 150, null);
+                    g2.drawImage(profile2, -10, 480, 150, 150, null);
                     break;
                 case 3:
-                    g2.drawImage(profile3, -10, 10, 150, 150, null);
+                    g2.drawImage(profile3, -10, 480, 150, 150, null);
                     break;
                 case 4:
-                    g2.drawImage(profile4, -10, 10, 150, 150, null);
+                    g2.drawImage(profile4, -10, 480, 150, 150, null);
                     break;
                 case 5:
-                    g2.drawImage(profile5, -10, 10, 150, 150, null);
+                    g2.drawImage(profile5, -10, 480, 150, 150, null);
                     break;
                 case 6:
-                    g2.drawImage(profile6, -10, 10, 150, 150, null);
+                    g2.drawImage(profile6, -10, 480, 150, 150, null);
                     break;
                 case 7:
-                    g2.drawImage(profile7, -10, 10, 150, 150, null);
+                    g2.drawImage(profile7, -10, 480, 150, 150, null);
                     break;
                 case 8:
-                    g2.drawImage(profile8, -10, 10, 150, 150, null);
+                    g2.drawImage(profile8, -10, 480, 150, 150, null);
                     break;
             }
+
 
 
         }
@@ -1090,13 +1146,44 @@ public class  Ui {
         g2.drawImage(dev1, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
-        String text = "DEVELOPER 1";
+        String text = "Rafael Antonio S. Abella";
         int x = getXCenter(text);
         int y = gp.screenHeight/4;
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y - 60, 700, 80, 30, 30);
 
-        // Main Title
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y + 30, 700, 300, 30, 30);
+
+        g2.drawImage(rafael, x+20 ,y + 60, 240, 240, null);
+
         g2.setColor(Color.white);
         g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,30F));
+        text = "Programmer & Sound Design";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 300;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 130, y - 150);
+
+        text = "BSIT 2 - G1 CSIT 228";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 120);
+
+        text = "23-2026-790";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 60);
+
+        text = "Member 1";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 265);
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
 
@@ -1114,15 +1201,47 @@ public class  Ui {
     }
 
     public void drawAboutUsScreen2() {
-        g2.drawImage(dev2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(dev1, 0, 0, gp.screenWidth, gp.screenHeight, null);
+
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
-        String text = "DEVELOPER 2";
+        String text = "Trixie Ann V. Rentuma";
         int x = getXCenter(text);
         int y = gp.screenHeight/4;
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x-10, y - 60, 700, 80, 30, 30);
 
-        // Main Title
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x-10, y + 30, 700, 300, 30, 30);
+
+        g2.drawImage(trixie, x+10 ,y + 60, 240, 240, null);
+
         g2.setColor(Color.white);
         g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,30F));
+        text = "Programmer & File handling";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 300;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 140, y - 150);
+
+        text = "BSIT 2 - G1 CSIT 228";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 120);
+
+        text = "23-1061-884";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 60);
+
+        text = "Member 2";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 265);
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
 
@@ -1140,15 +1259,47 @@ public class  Ui {
     }
 
     public void drawAboutUsScreen3() {
-        g2.drawImage(dev3, 0, 0, gp.screenWidth, gp.screenHeight, null);
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
-        String text = "DEVELOPER 3";
-        int x = getXCenter(text);
-        int y = gp.screenHeight/4;
+        g2.drawImage(dev1, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
-        // Main Title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,42));
+        String text = "Christian Earl V. Mahumot";
+        int x = getXCenter(text)-75;
+        int y = gp.screenHeight/4;
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y - 60, 690, 80, 30, 30);
+
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y + 30, 680, 300, 30, 30);
+
+        g2.drawImage(earl, x+20 ,y + 60, 240, 240, null);
+
         g2.setColor(Color.white);
         g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,30F));
+        text = "Assets & Graphics Design";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 300;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 130, y - 150);
+
+        text = "BSIT 2 - G1 CSIT 228";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 120);
+
+        text = "23-7090-133";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 60);
+
+        text = "Member 3";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 265);
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
 
@@ -1166,15 +1317,47 @@ public class  Ui {
     }
 
     public void drawAboutUsScreen4() {
-        g2.drawImage(dev4, 0, 0, gp.screenWidth, gp.screenHeight, null);
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
-        String text = "DEVELOPER 4";
-        int x = getXCenter(text);
-        int y = gp.screenHeight/4;
+        g2.drawImage(dev1, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
-        // Main Title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
+        String text = "April John A. Sultan";
+        int x = getXCenter(text)-60;
+        int y = gp.screenHeight/4;
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y - 60, 690, 80, 30, 30);
+
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y + 30, 690, 300, 30, 30);
+
+        g2.drawImage(april, x+20 ,y + 60, 240, 240, null);
+
         g2.setColor(Color.white);
         g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,30F));
+        text = "Assets  & Character Design";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 300;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 130, y - 150);
+
+        text = "BSIT 2 - G1 CSIT 228";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 120);
+
+        text = "23-5711-257";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 60);
+
+        text = "Member 4";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 265);
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
 
@@ -1192,13 +1375,47 @@ public class  Ui {
     }
 
     public void drawAboutUsScreen5() {
-        g2.drawImage(dev5, 0, 0, gp.screenWidth, gp.screenHeight, null); g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
-        String text = "DEVELOPER 5";
+        g2.drawImage(dev1, 0, 0, gp.screenWidth, gp.screenHeight, null);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
+        String text = "Keint Warren J. Poliquit";
         int x = getXCenter(text);
         int y = gp.screenHeight/4;
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y - 60, 690, 80, 30, 30);
+
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRoundRect( x, y + 30, 680, 300, 30, 30);
+
+        g2.drawImage(keint, x+20 ,y + 60, 240, 240, null);
 
         g2.setColor(Color.white);
         g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
+        text = "Programmer & UI Design";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 300;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 130, y - 150);
+
+        text = "BSIT 2 - G1 CSIT 228";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 120);
+
+        text = "23-5004-291";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 60);
+
+        text = "Member 5";
+        x = getXCenter(text);
+        y =  gp.screenHeight/4 + 350;
+        g2.setColor(Color.white);
+        g2.drawString(text, x + 120, y - 265);
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
 
@@ -1206,6 +1423,12 @@ public class  Ui {
         g2.drawString(text, 100, 520);
         if(commandNum == 1){
             g2.drawString(">", 60, 520);
+        }
+
+        text = "Next";
+        g2.drawString(text, 580, 520);
+        if(commandNum == 2){
+            g2.drawString(">", 530, 520);
         }
     }
 
