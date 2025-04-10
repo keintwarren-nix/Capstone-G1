@@ -25,8 +25,9 @@ public class GamePanel extends JPanel implements Runnable {
     public int cchoice = 0;
     public RoundManager roundManager;
     public final int roundTransitionState = 13;
-
-
+    public final int leaderboardState = 14;
+    public final int gameOverNameInputState = 15;
+    public final int winNameInputState = 16;
     // World Settings
     public Ui ui = new Ui(this);
     public final int maxWorldCol = 420, maxWorldRow = 100;
@@ -59,7 +60,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public tileManager tileM = new tileManager(this);
-
+    public LeaderboardManager leaderboardManager = new LeaderboardManager();
     KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
 
@@ -115,9 +116,19 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         if (gameState == playState) {
-            // Update round manager first
             roundManager.update();
 
+            // Check if the match has ended based on the number of rounds played
+            if (roundManager.getCurrentRound() > roundManager.getMaxRounds()) {
+                if (roundManager.getPlayerWins() > roundManager.getDummyWins()) {
+                    gameState = winState;
+                } else if (roundManager.getDummyWins() > roundManager.getPlayerWins()) {
+                    gameState = gameOverState;
+                } else {
+                    // Handle a draw in the overall match if needed
+                    gameState = gameOverState; // Or a specific draw state
+                }
+            }
             // Continue with your existing code for player/dummy updates
             if (player.health <= 0) {
                 player.deathEffect.update();

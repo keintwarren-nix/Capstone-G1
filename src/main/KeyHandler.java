@@ -15,7 +15,16 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+        char typedChar = e.getKeyChar();
+        if (gp.gameState == gp.winNameInputState) { // Only check for win name input
+            if (Character.isLetterOrDigit(typedChar) || typedChar == ' ') {
+                if (gp.ui.playerName.length() < 15) { // Limit name length
+                    gp.ui.playerName += typedChar;
+                }
+            }
+        }
     }
+
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -100,7 +109,7 @@ public class KeyHandler implements KeyListener {
                 }
 
                 if(gp.ui.commandNum == 1){
-                    // Menu logic here
+                    gp.gameState = gp.leaderboardState;
                 }
 
                 if(gp.ui.commandNum == 2){
@@ -111,6 +120,9 @@ public class KeyHandler implements KeyListener {
                 if(gp.ui.commandNum == 3){
                     System.exit(0);
                 }
+            }
+            if (code == KeyEvent.VK_L) { // Direct access from title screen (optional)
+                gp.gameState = gp.leaderboardState;
             }
         }
 
@@ -269,13 +281,65 @@ public class KeyHandler implements KeyListener {
             }
         }
 
-        // In your win state / game over state handling, update to restart the entire match
-        else if (gp.gameState == gp.winState || gp.gameState == gp.gameOverState) {
-            if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
-                gp.restart(); // This will now start a new match with rounds
+        if (gp.gameState == gp.winState) { // Only handle ENTER for win state
+            if (code == KeyEvent.VK_ENTER) {
+                gp.gameState = gp.winNameInputState;
+            }
+            if (code == KeyEvent.VK_L) {
+                gp.gameState = gp.leaderboardState;
+            }
+        } else if (gp.gameState == gp.winNameInputState) { // Only handle name submission for win
+            if (code == KeyEvent.VK_ENTER) {
+                // Submit the name and score
+                gp.leaderboardManager.addEntry(gp.ui.playerName, gp.roundManager.getPlayerWins()); // Access through gp
+                gp.ui.playerName = ""; // Clear the name for next time
+                gp.gameState = gp.leaderboardState; // Go to leaderboard after submitting
+            }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                if (gp.ui.playerName.length() > 0) {
+                    gp.ui.playerName = gp.ui.playerName.substring(0, gp.ui.playerName.length() - 1);
+                }
             }
         }
 
+
+        if (gp.gameState == gp.gameOverState || gp.gameState == gp.winState) {
+            if (code == KeyEvent.VK_L) {
+                gp.gameState = gp.leaderboardState;
+            } else if (code == KeyEvent.VK_ENTER) {
+                if (gp.gameState == gp.gameOverState) {
+                    gp.gameState = gp.gameOverNameInputState; // Go to name input from game over
+                } else if (gp.gameState == gp.winState) {
+                    gp.gameState = gp.winNameInputState; // Go to name input from win
+                }
+            }
+        } else if (gp.gameState == gp.gameOverNameInputState) {
+            if (code == KeyEvent.VK_ENTER) {
+                gp.leaderboardManager.addEntry(gp.ui.playerName, 0); // Assuming 0 score for game over
+                gp.ui.playerName = "";
+                gp.gameState = gp.leaderboardState;
+            }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                if (gp.ui.playerName.length() > 0) {
+                    gp.ui.playerName = gp.ui.playerName.substring(0, gp.ui.playerName.length() - 1);
+                }
+            }
+        } else if (gp.gameState == gp.winNameInputState) {
+            if (code == KeyEvent.VK_ENTER) {
+                gp.leaderboardManager.addEntry(gp.ui.playerName, gp.roundManager.getPlayerWins());
+                gp.ui.playerName = "";
+                gp.gameState = gp.leaderboardState;
+            }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                if (gp.ui.playerName.length() > 0) {
+                    gp.ui.playerName = gp.ui.playerName.substring(0, gp.ui.playerName.length() - 1);
+                }
+            }
+        } else if (gp.gameState == gp.leaderboardState) {
+            if (code == KeyEvent.VK_ESCAPE) {
+                gp.gameState = gp.tileState; // Go back to the main menu (adjust as needed)
+            }
+        }
 
         // Handle different key presses based on game state
         if (gp.gameState == gp.playState) {
