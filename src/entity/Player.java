@@ -26,6 +26,20 @@ public class Player extends Entity implements Character{
     int maxAttackCount = 3; // Limit 3 attacks
     int attackRange = 50; // Player must be within 50 pixels to deal damage
 
+    private int characterChoice;
+    public static final int BURN_EFFECT = 1;
+    public static final int FREEZE_EFFECT = 2;
+    public static final int STUN_EFFECT = 3;
+    public static final int POISON_EFFECT = 4;
+    public static final int DRAIN_EFFECT = 5;
+    public static final int KNOCKBACK_EFFECT = 6;
+    public static final int SLOW_EFFECT = 7;
+    public static final int CONFUSION_EFFECT = 8;
+
+    // Keep track of the special effect duration
+    public int specialEffectDuration = 0;
+    public int specialEffectType = 0;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
@@ -34,10 +48,54 @@ public class Player extends Entity implements Character{
         setDefaultValues();
         // Get player image using GamePanel's character choice
         getPlayerImage(gp.cchoice);
+        // Store the character choice for special effect reference
+        this.characterChoice = gp.cchoice;
         loadHealthImages();
         healthIcon = new Health();
         updateHealthIcon();
         deathEffect = new DeathEffect(gp, this);
+    }
+
+    public void applySpecialEffect(Dummy target) {
+        // Apply different effects based on character selection
+        switch(characterChoice) {
+            case 1: // Fire effect - continuous damage over time
+                target.health -= 3;
+                target.applyEffect(BURN_EFFECT, 5);
+                break;
+            case 2: // Ice effect - freeze in place
+                target.applyEffect(FREEZE_EFFECT, 3);
+                break;
+            case 3: // Lightning effect - stun
+                target.applyEffect(STUN_EFFECT, 2);
+                break;
+            case 4: // Poison effect - slow damage over time
+                target.applyEffect(POISON_EFFECT, 4);
+                break;
+            case 5: // Drain effect - heals player
+                target.health -= 5;
+                if(this.health < 100) {
+                    this.health += 5;
+                    if(this.health > 100) this.health = 100;
+                }
+                updateHealthIcon();
+                break;
+            case 6: // Strong knockback
+                target.applyEffect(KNOCKBACK_EFFECT, 1);
+                int pushDirection = (target.worldX > this.worldX) ? 1 : -1;
+                target.worldX += pushDirection * 30;
+                break;
+            case 7: // Slow effect
+                target.applyEffect(SLOW_EFFECT, 3);
+                break;
+            case 8: // Confusion effect - reverse controls
+                target.applyEffect(CONFUSION_EFFECT, 4);
+                break;
+            default:
+                target.health -= 10; // Default damage if no character selected
+                break;
+        }
+        target.updateHealthIcon();
     }
 
     public void setDefaultValues() {
@@ -52,7 +110,6 @@ public class Player extends Entity implements Character{
     @Override
     public void getPlayerImage(int choice) {
         try {
-
             if (choice == 0) {
                 choice = 1; // Default to character 1 if no choice was made
             }
@@ -71,19 +128,19 @@ public class Player extends Entity implements Character{
                     kick = ImageIO.read(getClass().getResource("/res/player/ch1_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch1_sp.png"));
                     break;
-//                case 2:
-//                    up1 = ImageIO.read(getClass().getResource("/res/player/ch2_jleft.png"));
-//                    up2 = ImageIO.read(getClass().getResource("/res/player/ch2_jright.png"));
-//                    left1 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk1.png"));
-//                    left2 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk2.png"));
-//                    right1 = ImageIO.read(getClass().getResource("/res/player/ch2_rwalk1.png"));
-//                    right2 = ImageIO.read(getClass().getResource("/res/player/ch2_rwalk2.png"));
-//                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch2_idle.png"));
-//                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch2_idle.png"));
-//                    punch = ImageIO.read(getClass().getResource("/res/player/ch2_rpunch.png"));
-//                    kick = ImageIO.read(getClass().getResource("/res/player/ch2_rkick.png"));
-//                    sp = ImageIO.read(getClass().getResource("/res/player/ch2_sp.png"));
-//                    break;
+                case 2:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch2_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch2_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch2_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch2_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch2_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch2_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch2_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch2_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch2_sp.png"));
+                    break;
                 case 3:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch3_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch3_jright.png"));
@@ -110,19 +167,19 @@ public class Player extends Entity implements Character{
                     kick = ImageIO.read(getClass().getResource("/res/player/ch4_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch4_sp.png"));
                     break;
-//                case 5:
-//                    up1 = ImageIO.read(getClass().getResource("/res/player/ch5_jleft.png"));
-//                    up2 = ImageIO.read(getClass().getResource("/res/player/ch5_jright.png"));
-//                    left1 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk1.png"));
-//                    left2 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk2.png"));
-//                    right1 = ImageIO.read(getClass().getResource("/res/player/ch5_rwalk1.png"));
-//                    right2 = ImageIO.read(getClass().getResource("/res/player/ch5_rwalk2.png"));
-//                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch5_idle.png"));
-//                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch5_idle.png"));
-//                    punch = ImageIO.read(getClass().getResource("/res/player/ch5_rpunch.png"));
-//                    kick = ImageIO.read(getClass().getResource("/res/player/ch5_rkick.png"));
-//                    sp = ImageIO.read(getClass().getResource("/res/player/ch5_sp.png"));
-//                    break;
+                case 5:
+                    up1 = ImageIO.read(getClass().getResource("/res/player/ch5_jleft.png"));
+                    up2 = ImageIO.read(getClass().getResource("/res/player/ch5_jright.png"));
+                    left1 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk1.png"));
+                    left2 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk2.png"));
+                    right1 = ImageIO.read(getClass().getResource("/res/player/ch5_rwalk1.png"));
+                    right2 = ImageIO.read(getClass().getResource("/res/player/ch5_rwalk2.png"));
+                    leftidle = ImageIO.read(getClass().getResource("/res/player/ch5_idle.png"));
+                    rightidle = ImageIO.read(getClass().getResource("/res/player/ch5_idle.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/player/ch5_rpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/player/ch5_rkick.png"));
+                    sp = ImageIO.read(getClass().getResource("/res/player/ch5_sp.png"));
+                    break;
                 case 6:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch6_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch6_jright.png"));
@@ -303,7 +360,12 @@ public class Player extends Entity implements Character{
         direction = attackType;
         gp.sound.playSE(soundIndex);
         if (isDummyInRange()) {
-            dealDamage(); // Apply damage only if within range
+            if(attackType.equals("sp")) {
+                // Apply special effect based on character
+                applySpecialEffect(gp.dummy);
+            } else {
+                dealDamage(); // Regular damage for normal attacks
+            }
         }
         attackCount++;
         if (attackCount >= maxAttackCount) {
@@ -377,11 +439,8 @@ public class Player extends Entity implements Character{
             g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
         }
 
-
-
-
         if (healthIcon != null && healthIcon.image != null) {
-            g2.drawImage(healthIcon.image, 30, -120, gp.tileSize * 8, gp.tileSize * 8, null);
+            g2.drawImage(healthIcon.image, -40, -150, gp.tileSize * 8, gp.tileSize * 8, null);
         }
     }
 
