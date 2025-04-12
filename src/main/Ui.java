@@ -154,6 +154,7 @@ public class  Ui {
         g2.setColor(Color.WHITE);
 
         if(gp.gameState == gp.tileState){
+            gp.sound.playMusic(7);
             drawTitleScreen();
         }
 
@@ -171,34 +172,42 @@ public class  Ui {
                     case 1:
                         ImageIcon a = new ImageIcon(getClass().getResource("/res/background/BackgroundAriel.gif"));
                         gp.backgroundImage = a.getImage();
+                        gp.sound.playMusic(6);
                         break;
                     case 2:
                         ImageIcon b = new ImageIcon(getClass().getResource("/res/background/BackgroundCinderella.gif"));
                         gp.backgroundImage = b.getImage();
+                        gp.sound.playMusic(9);
                         break;
                     case 3:
                         ImageIcon c = new ImageIcon(getClass().getResource("/res/background/BackgroundElsa.gif"));
                         gp.backgroundImage = c.getImage();
+                        gp.sound.playMusic(10);
                         break;
                     case 4:
                         ImageIcon d = new ImageIcon(getClass().getResource("/res/background/BackgroundMoana.gif"));
                        gp.backgroundImage = d.getImage();
+                       gp.sound.playMusic(11);
                         break;
                     case 5:
                         ImageIcon e = new ImageIcon(getClass().getResource("/res/background/BackgroundMulan.gif"));
                         gp.backgroundImage = e.getImage();
+                        gp.sound.playMusic(12);
                         break;
                     case 6:
                         ImageIcon f = new ImageIcon(getClass().getResource("/res/background/BackgroundSnowWhite.gif"));
                         gp.backgroundImage = f.getImage();
+                        gp.sound.playMusic(14);
                         break;
                     case 7:
                         ImageIcon g = new ImageIcon(getClass().getResource("/res/background/BackgroundTiana.gif"));
                         gp.backgroundImage = g.getImage();
+                        gp.sound.playMusic(15);
                         break;
                     case 8:
                         ImageIcon h = new ImageIcon(getClass().getResource("/res/background/BackgroundRapunzel.gif"));
                         gp.backgroundImage = h.getImage();
+                        gp.sound.playMusic(13);
                         break;
                 }
             } catch (Exception e) {
@@ -255,10 +264,12 @@ public class  Ui {
         }
 
         if (gp.gameState == gp.choosingState) {
+            gp.sound.playMusic(7);
             drawChoosingScreen();
         }
 
         if(gp.gameState == gp.chooseCharacterState){
+            gp.sound.playMusic(8);
             drawChooseCharacterScreen();
         }
         
