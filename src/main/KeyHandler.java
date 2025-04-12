@@ -8,7 +8,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
     public boolean up, left, right, punch, kick, sp;
-
+    public boolean isEnteringName = false;
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
     }
@@ -29,34 +29,35 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-
-        if(gp.gameState == gp.chooseCharacterState){
+//        System.out.println("Current Game State: " + gp.gameState);
+        if (gp.gameState == gp.chooseCharacterState) {
             gp.ui.commandAbt = 0;
-            if(code == KeyEvent.VK_A){
+            if (code == KeyEvent.VK_A) {
                 gp.ui.commandNum--;
-                if(gp.ui.commandNum < 1){
+                if (gp.ui.commandNum < 1) {
                     gp.ui.commandNum = 1;
                 }
             }
 
-            if(code == KeyEvent.VK_D){
+            if (code == KeyEvent.VK_D) {
                 gp.ui.commandNum++;
-                if(gp.ui.commandNum > 8){
+                if (gp.ui.commandNum > 8) {
                     gp.ui.commandNum = 8;
                 }
             }
 
             if (code == KeyEvent.VK_ENTER) {
-                if(gp.ui.commandAbt == 0){
+                if (gp.ui.commandAbt == 0) {
                     gp.cchoice = gp.ui.commandNum;  // Use commandNum directly as the choice
                     gp.player.getPlayerImage(gp.cchoice);  // Update player image
                     // Create a new dummy with the current game panel (contains updated choice)
                     gp.dummy = new Dummy(gp);
                     gp.gameState = gp.playState;
+                    // **ADD THIS LINE HERE:** Start the round manager when entering playState
+                    gp.roundManager.startMatch();
                 }
             }
         }
-
         if(gp.gameState == gp.choosingState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
@@ -282,8 +283,10 @@ public class KeyHandler implements KeyListener {
         }
 
         if (gp.gameState == gp.winState) { // Only handle ENTER for win state
+            System.out.println("Current Game State: " + gp.gameState);
             if (code == KeyEvent.VK_ENTER) {
                 gp.gameState = gp.winNameInputState;
+                System.out.println("Transitioning to winNameInputState");
             }
             if (code == KeyEvent.VK_L) {
                 gp.gameState = gp.leaderboardState;

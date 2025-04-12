@@ -12,7 +12,7 @@ public class  Ui {
     public int commandAbt = 0;
     public int characterChoice = 0;
     private Image gifBackground, dev1, dev2, dev3, dev4, dev5, back1, back2, back3, back4, back5, back6, back7,back8;
-    private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8;
+    private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8,title;
     private Image pfpEff1, pfpEff12, pfpEff2, pfpEff3, pfpEff32, pfpEff4, pfpEff5, pfpEff6, pfpEff7, pfpEff8;
 
     private Image icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, AI, keint, rafael, trixie, april, earl;
@@ -30,6 +30,9 @@ public class  Ui {
         ImageIcon gifIcon4 = new ImageIcon(getClass().getResource("/res/background/trixie.gif"));
         ImageIcon gifIcon5 = new ImageIcon(getClass().getResource("/res/background/earl.gif"));
         ImageIcon gifIcon6 = new ImageIcon(getClass().getResource("/res/background/april.gif"));
+
+        ImageIcon screen = new ImageIcon(getClass().getResource("/res/background/title.gif"));
+        title = screen.getImage();
 
         gifBackground = gifIcon.getImage();
         dev1 = gifIcon2.getImage();
@@ -329,9 +332,7 @@ public class  Ui {
         if (gp.gameState == gp.winNameInputState) {
             drawNameInputDialog(g2, "You Win! Enter Your Name:");
         }
-        if (gp.gameState == gp.gameOverNameInputState) {
-            drawNameInputDialog(g2, "Game Over! Enter Your Name:");
-        }
+
 
     }
 
@@ -353,7 +354,7 @@ public class  Ui {
     }
 
     public void drawRoundTransition(Graphics2D g2) {
-        g2.setColor(new Color(0, 0, 0, 200)); // Semi-transparent black background
+        g2.setColor(new Color(0, 0, 0, 200));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
         g2.setColor(Color.WHITE);
@@ -380,25 +381,23 @@ public class  Ui {
         }
 
         // Draw round result
-        int y = gp.screenHeight/2 - 80;
-        g2.drawString(resultText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(resultText)/2, y);
+        int y = gp.screenHeight / 2 - 80;
+        g2.drawString(resultText, gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(resultText) / 2, y);
 
         // Draw score
         String scoreText = "SCORE: PLAYER " + gp.roundManager.getPlayerWins() + " - " + gp.roundManager.getDummyWins() + " CPU";
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
         y += 60;
-        g2.drawString(scoreText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(scoreText)/2, y);
+        g2.drawString(scoreText, gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(scoreText) / 2, y);
 
-        // Draw "Next round starting..." or "Match over" message
-        String nextText;
-        if (gp.roundManager.getPlayerWins() >= (gp.roundManager.getMaxRounds() / 2 + 1) || gp.roundManager.getDummyWins() >= (gp.roundManager.getMaxRounds() / 2 + 1)) {
-            nextText = "MATCH OVER";
-        } else {
-            nextText = "NEXT ROUND STARTING...";
+        // Always indicate the next round if the match hasn't explicitly ended in the RoundManager
+        String nextText = "NEXT ROUND STARTING...";
+        if (gp.roundManager.isMatchEnded()) {
+            nextText = "MATCH OVER"; // This message will likely only briefly appear before the win/lose screen
         }
 
         y += 60;
-        g2.drawString(nextText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(nextText)/2, y);
+        g2.drawString(nextText, gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(nextText) / 2, y);
     }
 
     public void drawRapunzel() {
@@ -1625,7 +1624,7 @@ public void drawWinScreen(Graphics2D g2) {
 
     public void drawTitleScreen(){
         // Draw the background GIF
-        g2.drawImage(gifBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(title, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
         // Title Text
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,76F));
@@ -1652,7 +1651,7 @@ public void drawWinScreen(Graphics2D g2) {
             g2.drawString(">", x - gp.tileSize, y);
         }
 
-        text = "MENU";
+        text = "VIEW LEADERBOARD";
         x = getXCenter(text);
         y += gp.tileSize;
         g2.drawString(text, x, y);
@@ -1680,7 +1679,7 @@ public void drawWinScreen(Graphics2D g2) {
     public void drawChoosingScreen(){
         g2.setColor(Color.black);
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
+        g2.drawImage(gifBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 42F));
         String text = "CHOOSE YOUR MODE";
         int x = getXCenter(text);
@@ -1719,6 +1718,7 @@ public void drawWinScreen(Graphics2D g2) {
         g2.drawString(text, x, y);
         if(commandNum == 2){
             g2.drawString(">", x - gp.tileSize, y);
+
         }
     }
 }
