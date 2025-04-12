@@ -2,7 +2,7 @@ package main;
 
 import java.awt.*;
 import javax.swing.ImageIcon;
-
+import java.util.List;
 public class  Ui {
 
     GamePanel gp;
@@ -12,11 +12,13 @@ public class  Ui {
     public int commandAbt = 0;
     public int characterChoice = 0;
     private Image gifBackground, dev1, dev2, dev3, dev4, dev5, back1, back2, back3, back4, back5, back6, back7,back8;
-    private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8;
+    private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8,title;
     private Image pfpEff1, pfpEff12, pfpEff2, pfpEff3, pfpEff32, pfpEff4, pfpEff5, pfpEff6, pfpEff7, pfpEff8;
 
     private Image icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, AI, keint, rafael, trixie, april, earl;
     private Image descChar1, descChar2, descChar3, descChar4, descChar5, descChar6, descChar7, descChar8;
+    LeaderboardManager leaderboardManager;
+    public String playerName = "";
 
     public Ui(GamePanel gp) {
         this.gp = gp;
@@ -28,6 +30,9 @@ public class  Ui {
         ImageIcon gifIcon4 = new ImageIcon(getClass().getResource("/res/background/trixie.gif"));
         ImageIcon gifIcon5 = new ImageIcon(getClass().getResource("/res/background/earl.gif"));
         ImageIcon gifIcon6 = new ImageIcon(getClass().getResource("/res/background/april.gif"));
+
+        ImageIcon screen = new ImageIcon(getClass().getResource("/res/background/title.gif"));
+        title = screen.getImage();
 
         gifBackground = gifIcon.getImage();
         dev1 = gifIcon2.getImage();
@@ -146,6 +151,7 @@ public class  Ui {
         icon7 = icon_7.getImage();
         icon8 = icon_8.getImage();
 
+        leaderboardManager = new LeaderboardManager();
     }
 
     public void draw(Graphics2D g2){
@@ -256,13 +262,16 @@ public class  Ui {
         }
 
         if(gp.gameState == gp.gameOverState){
-            drawGameOverScreen();
+            drawGameOverScreen(g2);
         }
 
         if(gp.gameState == gp.winState){
-            drawWinScreen();
+            drawWinScreen(g2);
         }
 
+        if (gp.gameState == gp.winNameInputState) {
+            drawNameInputDialog(g2, "You Win! Enter Your Name:");
+        }
         if (gp.gameState == gp.choosingState) {
             gp.sound.playMusic(7);
             drawChoosingScreen();
@@ -328,6 +337,13 @@ public class  Ui {
         if(gp.gameState == gp.roundTransitionState) {
             drawRoundTransition(g2);
         }
+        if (gp.gameState == gp.leaderboardState) {
+            drawLeaderboardScreen(g2); // The new method to draw the leaderboard
+        }
+        if (gp.gameState == gp.winNameInputState) {
+            drawNameInputDialog(g2, "You Win! Enter Your Name:");
+        }
+
 
     }
 
@@ -349,7 +365,7 @@ public class  Ui {
     }
 
     public void drawRoundTransition(Graphics2D g2) {
-        g2.setColor(new Color(0, 0, 0, 200)); // Semi-transparent black background
+        g2.setColor(new Color(0, 0, 0, 200));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
         g2.setColor(Color.WHITE);
@@ -376,25 +392,23 @@ public class  Ui {
         }
 
         // Draw round result
-        int y = gp.screenHeight/2 - 80;
-        g2.drawString(resultText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(resultText)/2, y);
+        int y = gp.screenHeight / 2 - 80;
+        g2.drawString(resultText, gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(resultText) / 2, y);
 
         // Draw score
         String scoreText = "SCORE: PLAYER " + gp.roundManager.getPlayerWins() + " - " + gp.roundManager.getDummyWins() + " CPU";
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
         y += 60;
-        g2.drawString(scoreText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(scoreText)/2, y);
+        g2.drawString(scoreText, gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(scoreText) / 2, y);
 
-        // Draw "Next round starting..." or "Match over" message
-        String nextText;
-        if (gp.roundManager.getPlayerWins() >= (gp.roundManager.getMaxRounds() / 2 + 1) || gp.roundManager.getDummyWins() >= (gp.roundManager.getMaxRounds() / 2 + 1)) {
-            nextText = "MATCH OVER";
-        } else {
-            nextText = "NEXT ROUND STARTING...";
+        // Always indicate the next round if the match hasn't explicitly ended in the RoundManager
+        String nextText = "NEXT ROUND STARTING...";
+        if (gp.roundManager.isMatchEnded()) {
+            nextText = "MATCH OVER"; // This message will likely only briefly appear before the win/lose screen
         }
 
         y += 60;
-        g2.drawString(nextText, gp.screenWidth/2 - g2.getFontMetrics().stringWidth(nextText)/2, y);
+        g2.drawString(nextText, gp.screenWidth / 2 - g2.getFontMetrics().stringWidth(nextText) / 2, y);
     }
 
     public void drawRapunzel() {
@@ -1480,32 +1494,139 @@ public class  Ui {
         g2.drawString(text, x, y);
     }
 
-    public void drawGameOverScreen(){
-        String text = "GAME OVER";
+//    public void drawGameOverScreen(){
+//        String text = "GAME OVER";
+//        int x = getXCenter(text);
+//        int y = gp.screenHeight/2;
+//        g2.drawString(text, x, y);
+//
+//        text = "Press ENTER to restart";
+//        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+//        x = getXCenter(text);
+//        y = gp.screenHeight/2 + 50;
+//        g2.drawString(text, x, y);
+//
+//        // Option to go to leaderboard
+//        text = "Press L for Leaderboard";
+//        x = getXCenter(text);
+//        y = gp.screenHeight / 2 + 100;
+//        g2.drawString(text, x, y);
+//    }
+
+    public void drawGameOverScreen(Graphics2D g2) {
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2.setFont(new Font("Arial", Font.PLAIN, 80));
+        g2.setColor(Color.red);
+        String text = "Game Over!";
         int x = getXCenter(text);
-        int y = gp.screenHeight/2;
+        int y = gp.screenHeight / 2 - 80;
+        g2.drawString(text, x, y);
+        g2.setFont(arial_40);
+        g2.setColor(Color.white);
+        text = "Press ENTER to Restart"; // Changed prompt
+        x = getXCenter(text);
+        y = gp.screenHeight / 2 + 40;
+        g2.drawString(text, x, y);
+        text = "Press L for Leaderboard";
+        x =getXCenter(text);
+        y = gp.screenHeight / 2 + 80;
+        g2.drawString(text, x, y);
+    }
+//    public void drawWinScreen(){
+//        String text = "YOU WIN!";
+//        int x = getXCenter(text);
+//        int y = gp.screenHeight/2;
+//        g2.drawString(text, x, y);
+//
+//        text = "Press ENTER to play again";
+//        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+//        x = getXCenter(text);
+//        y = gp.screenHeight/2 + 50;
+//        g2.drawString(text, x, y);
+//
+//        // Option to go to leaderboard
+//        text = "Press L for Leaderboard";
+//        x = getXCenter(text);
+//        y = gp.screenHeight / 2 + 100;
+//        g2.drawString(text, x, y);
+//    }
+public void drawWinScreen(Graphics2D g2) {
+    g2.setColor(new Color(0, 0, 0, 150));
+    g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+    g2.setFont((new Font("Arial", Font.PLAIN, 80)));
+    g2.setColor(Color.yellow);
+    String text = "You Win!";
+    int x = getXCenter(text);
+    int y = gp.screenHeight / 2 - 80;
+    g2.drawString(text, x, y);
+    g2.setFont(arial_40);
+    g2.setColor(Color.white);
+    text = "Press ENTER to Enter Name";
+    x = getXCenter(text);
+    y = gp.screenHeight / 2 + 40;
+    g2.drawString(text, x, y);
+    text = "Press L for Leaderboard";
+    x = getXCenter(text);
+    y = gp.screenHeight / 2 + 80;
+    g2.drawString(text, x, y);
+}
+
+    public void drawLeaderboardScreen(Graphics2D g2) {
+        g2.setColor(Color.black);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2.setColor(Color.white);
+        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        String text = "Leaderboard";
+        int x = getXCenter(text);
+        int y = gp.tileSize * 2;
         g2.drawString(text, x, y);
 
-        text = "Press ENTER to restart";
-        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2.setFont(arial_40);
+        java.util.List<LeaderboardManager.LeaderboardEntry> leaderboard = leaderboardManager.getLeaderboard(); // Corrected line
+        int yOffset = gp.tileSize * 4;
+        for (int i = 0; i < leaderboard.size(); i++) {
+            LeaderboardManager.LeaderboardEntry entry = leaderboard.get(i);
+            String rank = (i + 1) + ".";
+            String name = entry.getName();
+            String score = String.valueOf(entry.getScore());
+            g2.drawString(rank, gp.tileSize * 4, yOffset);
+            g2.drawString(name, gp.tileSize * 6, yOffset);
+            g2.drawString(score, gp.screenWidth - gp.tileSize * 6, yOffset);
+            yOffset += 40;
+        }
+
+        g2.setFont(arial_40);
+        text = "Press ESC to Main Menu";
         x = getXCenter(text);
-        y = gp.screenHeight/2 + 50;
+        y = gp.screenHeight - gp.tileSize;
         g2.drawString(text, x, y);
     }
 
-    public void drawWinScreen(){
-        String text = "YOU WIN!";
+    public void drawNameInputDialog(Graphics2D g2, String message) {
+        g2.setColor(new Color(0, 0, 0, 200));
+        g2.fillRect(gp.screenWidth / 4, gp.screenHeight / 3, gp.screenWidth / 2, gp.screenHeight / 3);
+        g2.setColor(Color.white);
+        g2.setFont(arial_40);
+        String text = message;
         int x = getXCenter(text);
-        int y = gp.screenHeight/2;
+        int y = gp.screenHeight / 2 - 50;
         g2.drawString(text, x, y);
 
-        text = "Press ENTER to play again";
         g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2.setColor(Color.yellow);
+        text = playerName;
         x = getXCenter(text);
-        y = gp.screenHeight/2 + 50;
+        y = gp.screenHeight / 2 + 30;
+        g2.drawString(text, x, y);
+
+        g2.setFont(arial_40);
+        g2.setColor(Color.white);
+        text = "Press ENTER to Submit";
+        x = getXCenter(text);
+        y = gp.screenHeight / 2 + 100;
         g2.drawString(text, x, y);
     }
-
     public int getXCenter(String text){
         int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         int x = gp.screenWidth/2 - length/2;
@@ -1514,7 +1635,7 @@ public class  Ui {
 
     public void drawTitleScreen(){
         // Draw the background GIF
-        g2.drawImage(gifBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(title, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
         // Title Text
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,76F));
@@ -1541,7 +1662,7 @@ public class  Ui {
             g2.drawString(">", x - gp.tileSize, y);
         }
 
-        text = "MENU";
+        text = "VIEW LEADERBOARD";
         x = getXCenter(text);
         y += gp.tileSize;
         g2.drawString(text, x, y);
@@ -1569,7 +1690,7 @@ public class  Ui {
     public void drawChoosingScreen(){
         g2.setColor(Color.black);
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
+        g2.drawImage(gifBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 42F));
         String text = "CHOOSE YOUR MODE";
         int x = getXCenter(text);
@@ -1608,6 +1729,7 @@ public class  Ui {
         g2.drawString(text, x, y);
         if(commandNum == 2){
             g2.drawString(">", x - gp.tileSize, y);
+
         }
     }
 }

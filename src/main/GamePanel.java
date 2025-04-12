@@ -25,8 +25,9 @@ public class GamePanel extends JPanel implements Runnable {
     public int cchoice = 0;
     public RoundManager roundManager;
     public final int roundTransitionState = 13;
-
-
+    public final int leaderboardState = 14;
+    public final int gameOverNameInputState = 15;
+    public final int winNameInputState = 16;
     // World Settings
     public Ui ui = new Ui(this);
     public final int maxWorldCol = 420, maxWorldRow = 100;
@@ -59,18 +60,18 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public tileManager tileM = new tileManager(this);
-
+    public LeaderboardManager leaderboardManager = new LeaderboardManager();
     KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
 
     public CollisionChecker cChecker = new CollisionChecker(this);
 
-    public AssetSetter aSetter = new AssetSetter(this);
+//    public AssetSetter aSetter = new AssetSetter(this);
     public Sound sound = new Sound();
 
     public Dummy dummy = new Dummy(this);
     public Player player = new Player(this, keyH);
-
+//    public Player player2 = new Player(this,keyH);
     Image backgroundImage;
     public SuperObject obj[] = new SuperObject[10];
 
@@ -111,8 +112,22 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         if (gameState == playState) {
-            // Update round manager first
+            System.out.println("Player Health (before RoundManager): " + player.health);
+            System.out.println("Dummy Health (before RoundManager): " + dummy.health);
             roundManager.update();
+
+            // The RoundManager's update() method now handles checking for the end of the match.
+            // Remove the redundant check here.
+            // if (roundManager.getCurrentRound() > roundManager.getMaxRounds()) {
+            //     if (roundManager.getPlayerWins() > roundManager.getDummyWins()) {
+            //         gameState = winState;
+            //     } else if (roundManager.getDummyWins() > roundManager.getPlayerWins()) {
+            //         gameState = gameOverState;
+            //     } else {
+            //         // Handle a draw in the overall match if needed
+            //         gameState = gameOverState; // Or a specific draw state
+            //     }
+            // }
 
             // Continue with your existing code for player/dummy updates
             if (player.health <= 0) {
@@ -154,7 +169,13 @@ public class GamePanel extends JPanel implements Runnable {
 
         } else if (gameState == choosingState) {
             ui.draw(g2);
-        } else {
+        } else if (gameState == winState) {
+            ui.drawWinScreen(g2); // Call the method to draw the win screen
+        } else if (gameState == winNameInputState) {
+            ui.drawNameInputDialog(g2,"Enter your name: ");
+        }
+
+        else {
 
             if (backgroundImage != null) {
                 g2.drawImage(backgroundImage, 0, 0, screenWidth, screenHeight, this);

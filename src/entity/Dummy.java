@@ -19,7 +19,7 @@ public class Dummy extends Entity implements Character {
     int moveSpeed = 2;
     int chaseRange = 200;
     int attackRange = 50;
-    int attackDamage = 25;
+    int attackDamage = 15;
 
     public int effectType = 0;
     public int effectDuration = 0;
