@@ -18,19 +18,9 @@ public class Sound {
         soundURL[0] = getClass().getResource("/res/sounds/bgMusic1.wav");
         soundURL[1] = getClass().getResource("/res/sounds/bgMusic2.wav");
         soundURL[2] = getClass().getResource("/res/sounds/jump_se.wav");
-        soundURL[3] = getClass().getResource("/res/sounds/punch.wav");
-        soundURL[4] = getClass().getResource("/res/sounds/punch.wav");
+        soundURL[3] = getClass().getResource("/res/sounds/slam.wav");
+        soundURL[4] = getClass().getResource("/res/sounds/leaf.wav");
         soundURL[5] = getClass().getResource("/res/sounds/special.wav");
-        soundURL[6] = getClass().getResource("/res/sounds/ariel_bgm.wav");
-        soundURL[7] = getClass().getResource("/res/sounds/mMenu.wav");
-        soundURL[8] = getClass().getResource("/res/sounds/cSelect.wav");
-        soundURL[9] = getClass().getResource("/res/sounds/cinderella_bgm.wav");
-        soundURL[10] = getClass().getResource("/res/sounds/elsa_bgm.wav");
-        soundURL[11] = getClass().getResource("/res/sounds/moana_bgm.wav");
-        soundURL[12] = getClass().getResource("/res/sounds/mulan_bgm.wav");
-        soundURL[13] = getClass().getResource("/res/sounds/rapunzel_bgm.wav");
-        soundURL[14] = getClass().getResource("/res/sounds/snowWhite_bgm.wav");
-        soundURL[15] = getClass().getResource("/res/sounds/tiana_bgm.wav");
     }
 
     public void setFile(int i){
@@ -60,23 +50,11 @@ public class Sound {
         }
     }
 
-    private int currentMusicIndex = -1;  // Track the index of the currently playing music
-
-    public void playMusic(int i) {
-        // If the new music is the same as the current one, don't stop it
-        if (currentMusicIndex == i) {
-            return;  // Music is already playing, so we do nothing
-        }
-
-        stopMusic();  // Stop any currently playing music first
-        this.setFile(i);  // Load the new sound file
-        this.play();  // Play the new sound
-        this.loop();  // Loop the sound if needed (optional)
-
-        // Update the current music index to the new one
-        currentMusicIndex = i;
+    public void playMusic(int i){
+        this.setFile(i);
+        this.play();
+        this.loop();
     }
-
 
     public void stopMusic() {
         this.stop();

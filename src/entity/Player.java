@@ -12,17 +12,17 @@ import java.io.IOException;
 public class Player extends Entity implements Character{
     GamePanel gp;
     KeyHandler keyH;
+    int damage = 5;
     int attackCooldown = 1000; // 1 second cooldown
     boolean isJumping = false;
     int jumpHeight = 100;
     int jumpStartY;
     public boolean canAttack = true;
     public long lastAttackTime = 0;
-    int damage = 5;
 
     public DeathEffect deathEffect;
+    public Effects specialEffect;
     public boolean isDead = false;
-    private boolean deathEffectStarted = false; // Track if the death effect has been started
 
     int attackCount = 0; // Track consecutive attacks
     int maxAttackCount = 3; // Limit 3 attacks
@@ -42,6 +42,14 @@ public class Player extends Entity implements Character{
     public int specialEffectDuration = 0;
     public int specialEffectType = 0;
 
+    // Special ability properties
+    public static final long SPECIAL_COOLDOWN = 15000; // 15 seconds in milliseconds
+    public static long lastSpecialTime = 0;
+    public static boolean specialReady = true;
+    private boolean specialActive = false;
+    private long specialActiveStartTime = 0;
+    private int specialActiveDuration = 1000; // 1 second for visual effect
+
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
@@ -56,6 +64,52 @@ public class Player extends Entity implements Character{
         healthIcon = new Health();
         updateHealthIcon();
         deathEffect = new DeathEffect(gp, this);
+        specialEffect = new Effects(gp, this);
+    }
+
+    // New methods for special ability management
+    public static boolean canUseSpecial() {
+        long currentTime = System.currentTimeMillis();
+        if (!specialReady && currentTime - lastSpecialTime >= SPECIAL_COOLDOWN) {
+            specialReady = true;
+        }
+        return specialReady;
+    }
+
+    public static void triggerSpecialCooldown() {
+        lastSpecialTime = System.currentTimeMillis();
+        specialReady = false;
+    }
+
+    public long getRemainingCooldown() {
+        if (specialReady) return 0;
+
+        long currentTime = System.currentTimeMillis();
+        long elapsed = currentTime - lastSpecialTime;
+        long remaining = SPECIAL_COOLDOWN - elapsed;
+        return remaining > 0 ? remaining : 0;
+    }
+
+    public void useSpecialAbility() {
+        if (canUseSpecial()) {
+            direction = "sp";
+            specialActive = true;
+            specialActiveStartTime = System.currentTimeMillis();
+
+            // Apply special effect based on character
+            if (isDummyInRange()) {
+                applySpecialEffect(gp.dummy);
+            }
+
+            // Start visual effect
+            specialEffect.startEffect(worldX, worldY);
+
+            // Trigger cooldown
+            triggerSpecialCooldown();
+
+            // Play sound effect
+            gp.sound.playSE(5);
+        }
     }
 
     public void applySpecialEffect(Dummy target) {
@@ -107,19 +161,17 @@ public class Player extends Entity implements Character{
         direction = "rightidle";
         health = 100;
         isDead = false;
-        deathEffectStarted = false; // Reset death effect flag
     }
 
     @Override
     public void getPlayerImage(int choice) {
-        // Your existing getPlayerImage method - no changes needed
         try {
             if (choice == 0) {
                 choice = 1; // Default to character 1 if no choice was made
             }
 
             switch (choice) {
-                case 1://Ariel
+                case 1://ARIEL
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch1_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch1_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch1_lwalk1.png"));
@@ -131,9 +183,14 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch1_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch1_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch1_sp.png"));
+
+                    this.health = 120;
+                    this.damage = 7;
+                    this.speed = 1;
+
                     break;
-                // Cases 2-8 unchanged
-                case 2://Cinderella
+
+                case 2://CINDERELLA
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch2_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch2_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk1.png"));
@@ -145,8 +202,13 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch2_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch2_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch2_sp.png"));
+                    this.health = 85;
+                    this.damage = 10;
+                    this.speed = 5;
+
                     break;
-                case 3://Elsa
+
+                case 3://ELSA
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch3_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch3_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch3_lwalk1.png"));
@@ -158,8 +220,13 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch3_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch3_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch3_sp.png"));
+
+                    this.health = 75;
+                    this.damage = 12;
+                    this.speed = 4;
+
                     break;
-                case 4://Moana
+                case 4://MOANA
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch4_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch4_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch4_lwalk1.png"));
@@ -171,8 +238,13 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch4_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch4_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch4_sp.png"));
+
+                    this.health = 150;
+                    this.damage = 5;
+                    this.speed = 4;
+
                     break;
-                case 5://Mulan
+                case 5://MULAN
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch5_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch5_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk1.png"));
@@ -184,8 +256,13 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch5_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch5_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch5_sp.png"));
+
+                    this.health = 60;
+                    this.damage = 15;
+                    this.speed = 6;
+
                     break;
-                case 6://SnowWhite
+                case 6://SNOW WHITE
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch6_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch6_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch6_lwalk1.png"));
@@ -197,8 +274,11 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch6_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch6_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch6_sp.png"));
+                    this.health = 145;
+                    this.damage = 9;
+                    this.speed = 3;
                     break;
-                case 7://Tiana
+                case 7://TIANA
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch7_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch7_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch7_lwalk1.png"));
@@ -210,8 +290,11 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch7_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch7_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch7_sp.png"));
+                    this.health = 160;
+                    this.damage = 5;
+                    this.speed = 3;
                     break;
-                case 8://Rapunzel
+                case 8://RAPUNZEL
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch8_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch8_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch8_lwalk1.png"));
@@ -223,6 +306,9 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch8_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch8_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch8_sp.png"));
+                    this.health = 100;
+                    this.damage = 9;
+                    this.speed = 5;
                     break;
                 default:
                     System.out.println("Invalid player choice: " + choice);
@@ -231,6 +317,7 @@ public class Player extends Entity implements Character{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void loadHealthImages() {
@@ -248,42 +335,49 @@ public class Player extends Entity implements Character{
     }
 
     public void updateHealthIcon() {
-        if (health == 100) {
+
+        float healthPercent = (float) health / maxHealth;
+
+        if (healthPercent == 1.0f) {
             healthIcon.image = healthImages[5];
-        } else if (health <= 80 && health > 60) {
+        } else if (healthPercent > 0.8f) {
             healthIcon.image = healthImages[4];
-        } else if (health <= 60 && health > 40) {
+        } else if (healthPercent > 0.6f) {
             healthIcon.image = healthImages[3];
-        } else if (health <= 40 && health > 20) {
+        } else if (healthPercent > 0.4f) {
             healthIcon.image = healthImages[2];
-        } else if (health <= 20 && health > 0) {
+        } else if (healthPercent > 0.2f) {
             healthIcon.image = healthImages[1];
         } else {
             healthIcon.image = healthImages[0];
+
             // Check if we need to start death effect
-            if (!deathEffectStarted && health <= 0) {
+            if (!isDead && health <= 0) {
                 isDead = true;
-                deathEffectStarted = true;
                 deathEffect.startEffect(worldX, worldY);
-                System.out.println("Player death effect started at: " + worldX + ", " + worldY);
             }
         }
     }
 
+
     public void update() {
         // Check if player is dead
         if (health <= 0) {
-            // Make sure death effect is started
-            if (!deathEffectStarted) {
-                isDead = true;
-                deathEffectStarted = true;
-                deathEffect.startEffect(worldX, worldY);
-                System.out.println("Player death effect started in update at: " + worldX + ", " + worldY);
-            }
-
-            // Update the death effect animation
+            isDead = true;
             deathEffect.update();
             return; // Skip player controls if dead
+        }
+
+        // Update special effect
+        specialEffect.update();
+
+        // Check if special ability is active
+        if (specialActive) {
+            if (System.currentTimeMillis() - specialActiveStartTime >= specialActiveDuration) {
+                specialActive = false;
+                // Return to idle state after special
+                direction = "rightidle";
+            }
         }
 
         boolean keyPressed = keyH.up || keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp;
@@ -295,12 +389,10 @@ public class Player extends Entity implements Character{
             attackCount = 0; // Reset attack count after cooldown
         }
 
-        if (keyPressed) {
+        if (keyPressed && !specialActive) {
             handleKeyInput();
-        } else {
-            if (!isJumping && worldY == 420) {
-                direction = "rightidle";
-            }
+        } else if (!specialActive && !isJumping && worldY == 420) {
+            direction = "rightidle";
         }
 
         handleJump();
@@ -311,7 +403,6 @@ public class Player extends Entity implements Character{
         }
     }
 
-    // Rest of the methods remain unchanged
     public void handleKeyInput() {
         String prevDirection = direction;
 
@@ -323,13 +414,14 @@ public class Player extends Entity implements Character{
             direction = "right";
         } else if (keyH.left) {
             direction = "left";
+        } else if (keyH.sp && canUseSpecial()) {
+            // Use special ability
+            useSpecialAbility();
         } else if (canAttack && attackCount < maxAttackCount) {
             if (keyH.punch) {
                 performAttack("punch", 3);
             } else if (keyH.kick) {
                 performAttack("kick", 4);
-            } else if (keyH.sp) {
-                performAttack("sp", 5);
             }
         }
 
@@ -374,12 +466,7 @@ public class Player extends Entity implements Character{
         direction = attackType;
         gp.sound.playSE(soundIndex);
         if (isDummyInRange()) {
-            if(attackType.equals("sp")) {
-                // Apply special effect based on character
-                applySpecialEffect(gp.dummy);
-            } else {
-                dealDamage(); // Regular damage for normal attacks
-            }
+            dealDamage(); // Regular damage for normal attacks
         }
         attackCount++;
         if (attackCount >= maxAttackCount) {
@@ -403,6 +490,7 @@ public class Player extends Entity implements Character{
 
     public void handleJump() {
         if (isJumping) {
+//            gp.sound.playSE(2);
             worldY -= speed * 4;
             if (worldY <= jumpStartY - jumpHeight) {
                 isJumping = false;
@@ -416,13 +504,12 @@ public class Player extends Entity implements Character{
     }
 
     public void draw(Graphics2D g2) {
-        // If player is dead, only draw the death effect and exit
+        // Draw death effect if player is dead
         if (health <= 0) {
             deathEffect.draw(g2);
             return;
         }
 
-        // Draw player normally if not dead
         BufferedImage image = rightidle;
         if (direction != null) {
             switch (direction) {
@@ -448,13 +535,34 @@ public class Player extends Entity implements Character{
         }
 
         if(direction == "sp"){
-            g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
-        }
-        else if(direction == "kick"){
             g2.drawImage(image, worldX, worldY, gp.tileSize * 3, gp.tileSize * 2, null);
-        }
-        else{
+            specialEffect.draw(g2); // Draw special effect
+        } else {
             g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
+        }
+
+        // Draw special ability cooldown indicator
+        // Draw special ability cooldown indicator
+        if (!canUseSpecial()) {
+            // Modified cooldown bar dimensions and position
+            int cooldownBarWidth = 120; // Increased width
+            int cooldownBarHeight = 10; // Increased height
+            int cooldownBarX = 50; // Position horizontally aligned with health bar
+            int cooldownBarY = 30; // Position below health bar
+
+            // Draw background bar
+            g2.setColor(new Color(100, 100, 100, 180)); // Darker background
+            g2.fillRect(cooldownBarX, cooldownBarY, cooldownBarWidth, cooldownBarHeight);
+
+            // Calculate and draw remaining cooldown
+            double cooldownPercentage = (double)getRemainingCooldown() / SPECIAL_COOLDOWN;
+            int remainingWidth = (int)(cooldownBarWidth * cooldownPercentage);
+            g2.setColor(new Color(0, 255, 125, 220)); // Brighter blue
+            g2.fillRect(cooldownBarX + 20, cooldownBarY + 55, remainingWidth + cooldownBarWidth/2, cooldownBarHeight*2);
+
+            // Add border
+            g2.setColor(new Color(0, 0, 0, 200));
+            g2.drawRect(cooldownBarX + 20, cooldownBarY + 55, cooldownBarWidth + cooldownBarWidth/2, cooldownBarHeight*2);
         }
 
         if (healthIcon != null && healthIcon.image != null) {
@@ -466,10 +574,5 @@ public class Player extends Entity implements Character{
         if(i != 999){
             // Handle object pickup
         }
-    }
-
-    // Method to check if death animation is complete
-    public boolean isDeathComplete() {
-        return deathEffectStarted && deathEffect.isComplete();
     }
 }

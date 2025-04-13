@@ -11,6 +11,7 @@ public class  Ui {
     public int commandNum = 0;
     public int commandAbt = 0;
     public int characterChoice = 0;
+    public int mapChoice = 0;
     private Image gifBackground, dev1, dev2, dev3, dev4, dev5, back1, back2, back3, back4, back5, back6, back7,back8;
     private Image profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8,title;
     private Image pfpEff1, pfpEff12, pfpEff2, pfpEff3, pfpEff32, pfpEff4, pfpEff5, pfpEff6, pfpEff7, pfpEff8;
@@ -18,6 +19,9 @@ public class  Ui {
     private Image icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, AI, keint, rafael, trixie, april, earl;
     private Image descChar1, descChar2, descChar3, descChar4, descChar5, descChar6, descChar7, descChar8;
     LeaderboardManager leaderboardManager;
+
+    private Image map1,map2,map3;
+
     public String playerName = "";
 
     public Ui(GamePanel gp) {
@@ -142,6 +146,14 @@ public class  Ui {
         april = a.getImage();
         earl = e.getImage();
 
+        ImageIcon m1 = new ImageIcon(getClass().getResource("/res/background/CYM1.gif"));
+        ImageIcon m2 = new ImageIcon(getClass().getResource("/res/background/CYM2.gif"));
+        ImageIcon m3 = new ImageIcon(getClass().getResource("/res/background/CYM3.gif"));
+
+        map1 = m1.getImage();
+        map2 = m2.getImage();
+        map3 = m3.getImage();
+
         icon1 = icon_1.getImage();
         icon2 = icon_2.getImage();
         icon3 = icon_3.getImage();
@@ -160,7 +172,6 @@ public class  Ui {
         g2.setColor(Color.WHITE);
 
         if(gp.gameState == gp.tileState){
-            gp.sound.playMusic(7);
             drawTitleScreen();
         }
 
@@ -174,46 +185,38 @@ public class  Ui {
                 if (characterChoice == 0) {
                     characterChoice = 1; // Default to character 1 if no choice was made
                 }
-                switch (characterChoice) {
+                switch (mapChoice) {
                     case 1:
                         ImageIcon a = new ImageIcon(getClass().getResource("/res/background/BackgroundAriel.gif"));
                         gp.backgroundImage = a.getImage();
-                        gp.sound.playMusic(6);
                         break;
                     case 2:
                         ImageIcon b = new ImageIcon(getClass().getResource("/res/background/BackgroundCinderella.gif"));
                         gp.backgroundImage = b.getImage();
-                        gp.sound.playMusic(9);
                         break;
                     case 3:
                         ImageIcon c = new ImageIcon(getClass().getResource("/res/background/BackgroundElsa.gif"));
                         gp.backgroundImage = c.getImage();
-                        gp.sound.playMusic(10);
                         break;
                     case 4:
                         ImageIcon d = new ImageIcon(getClass().getResource("/res/background/BackgroundMoana.gif"));
                        gp.backgroundImage = d.getImage();
-                       gp.sound.playMusic(11);
                         break;
                     case 5:
                         ImageIcon e = new ImageIcon(getClass().getResource("/res/background/BackgroundMulan.gif"));
                         gp.backgroundImage = e.getImage();
-                        gp.sound.playMusic(12);
                         break;
                     case 6:
                         ImageIcon f = new ImageIcon(getClass().getResource("/res/background/BackgroundSnowWhite.gif"));
                         gp.backgroundImage = f.getImage();
-                        gp.sound.playMusic(14);
                         break;
                     case 7:
                         ImageIcon g = new ImageIcon(getClass().getResource("/res/background/BackgroundTiana.gif"));
                         gp.backgroundImage = g.getImage();
-                        gp.sound.playMusic(15);
                         break;
                     case 8:
                         ImageIcon h = new ImageIcon(getClass().getResource("/res/background/BackgroundRapunzel.gif"));
                         gp.backgroundImage = h.getImage();
-                        gp.sound.playMusic(13);
                         break;
                 }
             } catch (Exception e) {
@@ -273,12 +276,10 @@ public class  Ui {
             drawNameInputDialog(g2, "You Win! Enter Your Name:");
         }
         if (gp.gameState == gp.choosingState) {
-            gp.sound.playMusic(7);
             drawChoosingScreen();
         }
 
         if(gp.gameState == gp.chooseCharacterState){
-            gp.sound.playMusic(8);
             drawChooseCharacterScreen();
         }
         
@@ -334,6 +335,43 @@ public class  Ui {
             drawRapunzel();
         }
 
+        if(gp.gameState == gp.choosingMapState){
+            drawChooseMapScreen();
+        }
+
+
+        if(gp.gameState == gp.map1){
+            drawChooseMap1();
+        }
+
+        if(gp.gameState == gp.map2){
+            drawChooseMap2();
+        }
+
+        if(gp.gameState == gp.map3){
+            drawChooseMap3();
+        }
+
+        if(gp.gameState == gp.map4) {
+            drawChooseMap4();
+        }
+
+        if(gp.gameState == gp.map5){
+            drawChooseMap5();
+        }
+
+        if(gp.gameState == gp.map6){
+            drawChooseMap6();
+        }
+
+        if(gp.gameState == gp.map7){
+            drawChooseMap7();
+        }
+
+        if(gp.gameState == gp.map8){
+            drawChooseMap8();
+        }
+
         if(gp.gameState == gp.roundTransitionState) {
             drawRoundTransition(g2);
         }
@@ -345,6 +383,85 @@ public class  Ui {
         }
 
 
+    }
+
+    public void drawChooseMapScreen() {
+        drawChooseMap1();
+        switch(commandNum){
+            case 1:
+                drawChooseMap1();
+                break;
+            case 2:
+                drawChooseMap2();
+                break;
+            case 3:
+                drawChooseMap3();
+                break;
+            case 4:
+                drawChooseMap4();
+                break;
+            case 5:
+                drawChooseMap5();
+                break;
+            case 6:
+                drawChooseMap6();
+                break;
+            case 7:
+                drawChooseMap7();
+                break;
+            case 8:
+                drawChooseMap8();
+                break;
+        }
+    }
+
+
+    public void drawChooseMap1(){
+        mapChoice = 1;
+        g2.drawImage(map1, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back1,224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap2(){
+        mapChoice = 2;
+        g2.drawImage(map2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back2, 224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap3(){
+        mapChoice = 3;
+        g2.drawImage(map2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back3,224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap4(){
+        mapChoice = 4;
+        g2.drawImage(map2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back4, 224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap5(){
+        mapChoice = 5;
+        g2.drawImage(map2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back5, 224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap6(){
+        mapChoice = 6;
+        g2.drawImage(map2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back6, 224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap7(){
+        mapChoice = 7;
+        g2.drawImage(map2, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back7,224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
+    }
+
+    public void drawChooseMap8(){
+        mapChoice = 8;
+        g2.drawImage(map3, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        g2.drawImage(back8, 224, 150, gp.screenWidth/2 - 65, gp.screenHeight/2 + 9, null);
     }
 
     public void drawRoundInfo(Graphics2D g2) {
@@ -1449,12 +1566,6 @@ public class  Ui {
         if(commandNum == 1){
             g2.drawString(">", 60, 520);
         }
-
-        text = "Next";
-        g2.drawString(text, 580, 520);
-        if(commandNum == 2){
-            g2.drawString(">", 530, 520);
-        }
     }
 
     public void drawChooseCharacterScreen() {
@@ -1638,10 +1749,14 @@ public void drawWinScreen(Graphics2D g2) {
         g2.drawImage(title, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
         // Title Text
+
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,76F));
         String text = "Disney Clash";
         int x = getXCenter(text);
         int y = gp.screenHeight/4;
+
+        g2.setColor(new Color(0, 0, 0, 200));
+        g2.fillRoundRect( x-20, y - 60, 520, 75, 30, 30);
 
         // Shadow for Title
         g2.setColor(Color.gray);

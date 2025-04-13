@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import entity.Dummy;
 
 public class KeyHandler implements KeyListener {
+
     GamePanel gp;
     public boolean up, left, right, punch, kick, sp;
     public boolean isEnteringName = false;
@@ -47,21 +48,51 @@ public class KeyHandler implements KeyListener {
 
             if (code == KeyEvent.VK_ENTER) {
                 if (gp.ui.commandAbt == 0) {
-                    gp.cchoice = gp.ui.commandNum;  // Use commandNum directly as the choice
+                    // Recreate dummy based on choice
+                    gp.gameState = gp.playState; // Now go to map state
+                    gp.cchoice = gp.ui.commandNum;  // Set chosen character
                     gp.player.getPlayerImage(gp.cchoice);  // Update player image
-                    // Create a new dummy with the current game panel (contains updated choice)
                     gp.dummy = new Dummy(gp);
-                    gp.gameState = gp.playState;
-                    // **ADD THIS LINE HERE:** Start the round manager when entering playState
                     gp.roundManager.startMatch();
                 }
             }
+
         }
+
+
+        if (gp.gameState == gp.choosingMapState) {
+            gp.ui.commandAbt = 0;
+            if (code == KeyEvent.VK_A) {
+                gp.ui.commandNum--;
+                if (gp.ui.commandNum < 1) {
+                    gp.ui.commandNum = 1;
+                }
+            }
+
+            if (code == KeyEvent.VK_D) {
+                gp.ui.commandNum++;
+                if (gp.ui.commandNum > 8) {
+                    gp.ui.commandNum = 8;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandAbt == 0) {
+                    gp.ui.mapChoice = gp.ui.commandNum; // Save map selection
+                    gp.gameState = gp.chooseCharacterState; // Move to play state
+                   // Start the round
+                }
+            }
+
+        }
+
+
         if(gp.gameState == gp.choosingState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
                 if(gp.ui.commandNum < 0){
                     gp.ui.commandNum = 2;
+
                 }
             }
             if (code == KeyEvent.VK_S) {
@@ -73,7 +104,7 @@ public class KeyHandler implements KeyListener {
 
             if (code == KeyEvent.VK_ENTER) {
                 if(gp.ui.commandNum == 0){
-                    gp.gameState = gp.chooseCharacterState;
+                    gp.gameState = gp.choosingMapState;
                 }
 
                 if(gp.ui.commandNum == 1){

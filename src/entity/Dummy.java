@@ -19,7 +19,7 @@ public class Dummy extends Entity implements Character {
     int moveSpeed = 2;
     int chaseRange = 200;
     int attackRange = 50;
-    int attackDamage = 20;
+    int attackDamage = 15;
 
     public int effectType = 0;
     public int effectDuration = 0;
@@ -40,7 +40,6 @@ public class Dummy extends Entity implements Character {
     long attackAnimationStartTime = 0;
     boolean stopMoving = false;
     boolean isDead = false;
-    private boolean deathEffectStarted = false; // Track if death effect has been started
 
     public DeathEffect deathEffect;
 
@@ -92,6 +91,7 @@ public class Dummy extends Entity implements Character {
 
     @Override
     public void getDummy(int choice) {
+        // Existing getDummy implementation remains unchanged
         try {
             // If choice is 0 (default), use a fallback choice
             if (choice == 0) {
@@ -99,10 +99,7 @@ public class Dummy extends Entity implements Character {
             }
 
             switch (choice) {
-                case 1:
-                    this.attackDamage = 22;
-                    this.moveSpeed = 3;
-                    this.health = 100;
+                case 1://ARIEL
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch1_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch1_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch1_lwalk1.png"));
@@ -119,10 +116,8 @@ public class Dummy extends Entity implements Character {
                     this.attackDamage = 7;
                     this.speed = 1;
                     break;
-                case 2:
-                    this.attackDamage = 30;
-                    this.moveSpeed = 2;
-                    this.health = 120;
+
+                case 2://CINDERELLA
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch2_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch2_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch2_lwalk1.png"));
@@ -131,14 +126,15 @@ public class Dummy extends Entity implements Character {
                     right2 = ImageIO.read(getClass().getResource("/res/npc/ch2_rwalk2.png"));
                     leftidle = ImageIO.read(getClass().getResource("/res/npc/ch2_idle.png"));
                     rightidle = ImageIO.read(getClass().getResource("/res/npc/ch2_idle.png"));
-                    punch = ImageIO.read(getClass().getResource("/res/npc/ch2_rpunch.png"));
-                    kick = ImageIO.read(getClass().getResource("/res/npc/ch2_rkick.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch2_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch2_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch2_sp.png"));
+                    this.health = 85;
+                    this.attackDamage = 10;
+                    this.speed = 5;
                     break;
-                case 3:
-                    this.attackDamage = 15;
-                    this.moveSpeed = 5;
-                    this.health = 95;
+
+                case 3://ELSA
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch3_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch3_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch3_lwalk1.png"));
@@ -155,7 +151,8 @@ public class Dummy extends Entity implements Character {
                     this.attackDamage = 12;
                     this.speed = 4;
                     break;
-                case 4:
+
+                case 4://MOANA
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch4_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch4_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch4_lwalk1.png"));
@@ -167,8 +164,13 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch4_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch4_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch4_sp.png"));
+
+                    this.health = 150;
+                    this.attackDamage = 5;
+                    this.speed = 4;
                     break;
-                case 5:
+
+                case 5://MULAN
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch5_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch5_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch5_lwalk1.png"));
@@ -177,15 +179,16 @@ public class Dummy extends Entity implements Character {
                     right2 = ImageIO.read(getClass().getResource("/res/npc/ch5_rwalk2.png"));
                     leftidle = ImageIO.read(getClass().getResource("/res/npc/ch5_idle.png"));
                     rightidle = ImageIO.read(getClass().getResource("/res/npc/ch5_idle.png"));
-                    punch = ImageIO.read(getClass().getResource("/res/npc/ch5_rpunch.png"));
-                    kick = ImageIO.read(getClass().getResource("/res/npc/ch5_rkick.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch5_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch5_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch5_sp.png"));
 
                     this.health = 60;
                     this.attackDamage = 15;
                     this.speed = 6;
                     break;
-                case 6:
+
+                case 6://SNOW WHITE
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch6_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch6_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch6_lwalk1.png"));
@@ -194,14 +197,15 @@ public class Dummy extends Entity implements Character {
                     right2 = ImageIO.read(getClass().getResource("/res/npc/ch6_rwalk2.png"));
                     leftidle = ImageIO.read(getClass().getResource("/res/npc/ch6_idle.png"));
                     rightidle = ImageIO.read(getClass().getResource("/res/npc/ch6_idle.png"));
-                    punch = ImageIO.read(getClass().getResource("/res/npc/ch6_rpunch.png"));
-                    kick = ImageIO.read(getClass().getResource("/res/npc/ch6_rkick.png"));
+                    punch = ImageIO.read(getClass().getResource("/res/npc/ch6_lpunch.png"));
+                    kick = ImageIO.read(getClass().getResource("/res/npc/ch6_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch6_sp.png"));
                     this.health = 145;
                     this.attackDamage = 9;
                     this.speed = 3;
                     break;
-                case 7:
+
+                case 7://TIANA
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch7_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch7_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch7_lwalk1.png"));
@@ -217,7 +221,8 @@ public class Dummy extends Entity implements Character {
                     this.attackDamage = 5;
                     this.speed = 3;
                     break;
-                case 8:
+
+                case 8://RAPUNZEL
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch8_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch8_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch8_lwalk1.png"));
@@ -276,14 +281,6 @@ public class Dummy extends Entity implements Character {
         } else {
             healthIcon.image = healthImages[5];
             collisionOn = false;
-
-            // Check if we need to start death effect
-            if (!deathEffectStarted && health <= 0) {
-                isDead = true;
-                deathEffectStarted = true;
-                deathEffect.startEffect(worldX, worldY);
-                System.out.println("Dummy death effect started at: " + worldX + ", " + worldY);
-            }
         }
     }
 
@@ -477,24 +474,17 @@ public class Dummy extends Entity implements Character {
     }
 
     public void update() {
-        // Check if health is 0 or less
         if (health <= 0) {
-            // Make sure death effect is started
-            if (!deathEffectStarted) {
+            if (!isDead) {
                 isDead = true;
-                deathEffectStarted = true;
                 deathEffect.startEffect(worldX, worldY);
-                System.out.println("Dummy death effect started in update at: " + worldX + ", " + worldY);
             }
-
-            // Update the death effect animation
             deathEffect.update();
-            return; // Skip AI controls if dead
+            return;
         }
 
         updateEffects();
         specialEffect.update();
-
 
         moveToPlayer();
         spriteCounter++;
@@ -505,13 +495,11 @@ public class Dummy extends Entity implements Character {
     }
 
     public void draw(Graphics2D g2) {
-        // If dummy is dead, only draw the death effect
         if (health <= 0) {
             deathEffect.draw(g2);
             return;
         }
 
-        // Draw dummy normally if not dead
         BufferedImage image = rightidle;
         if (direction != null) {
             switch (direction) {
@@ -535,9 +523,6 @@ public class Dummy extends Entity implements Character {
                     break;
                 case "rightidle":
                     image = rightidle;
-                    break;
-                case "sp":
-                    image = sp;
                     break;
             }
         }
@@ -607,10 +592,5 @@ public class Dummy extends Entity implements Character {
             int healthBarY = worldY - (gp.tileSize / 2) - 20;
             g2.drawImage(healthIcon.image, 425, -150, gp.tileSize * 8, gp.tileSize * 8, null);
         }
-    }
-
-    // Method to check if death animation is complete
-    public boolean isDeathComplete() {
-        return deathEffectStarted && deathEffect.isComplete();
     }
 }
