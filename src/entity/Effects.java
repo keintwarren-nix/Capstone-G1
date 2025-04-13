@@ -25,15 +25,44 @@ public class Effects {
     public static long lastSpecialTime = 0;
     public static boolean specialReady = true;
 
+
     public Effects(GamePanel gp, Entity entity) {
         this.gp = gp;
         this.entity = entity;
-        loadEffect();
-    }
+        loadEffect(5);
+        }
 
-    private void loadEffect() {
+
+
+    public void loadEffect(int choice) {
         try {
-            specialEffect = new ImageIcon(getClass().getResource("/res/objects/protection.gif")).getImage();
+            switch(choice){
+                case 1:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/siren.gif")).getImage();
+                    break;
+                case 2:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/healing.gif")).getImage();
+                    break;
+                case 3:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/frost.gif")).getImage();
+                    break;
+                case 4:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/shower.gif")).getImage();
+                    break;
+                case 5:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/swordDance.gif")).getImage();
+                    break;
+                case 6:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/protection.gif")).getImage();
+                    break;
+                case 7:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/cook.gif")).getImage();
+                    break;
+                case 8:
+                    specialEffect = new ImageIcon(getClass().getResource("/res/objects/gold.gif")).getImage();
+                    break;
+
+            }
         } catch (Exception e) {
             System.out.println("Error loading effect resources");
             e.printStackTrace();
@@ -109,4 +138,5 @@ public class Effects {
         completed = true;
         return completed;
     }
-}
+
+    }

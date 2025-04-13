@@ -1750,21 +1750,19 @@ public void drawWinScreen(Graphics2D g2) {
 
         // Title Text
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,76F));
         String text = "Disney Clash";
         int x = getXCenter(text);
         int y = gp.screenHeight/4;
 
         g2.setColor(new Color(0, 0, 0, 200));
-        g2.fillRoundRect( x-20, y - 60, 520, 75, 30, 30);
+//        g2.fillRoundRect( x-20, y - 60, 520, 75, 30, 30);
 
         // Shadow for Title
         g2.setColor(Color.gray);
-        g2.drawString(text, x + 5, y + 5);
 
-        // Main Title
+//        // Main Title
         g2.setColor(Color.white);
-        g2.drawString(text, x, y);
+//        g2.drawString(text, x, y);
 
         // Menu Options
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
