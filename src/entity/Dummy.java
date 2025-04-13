@@ -19,13 +19,12 @@ public class Dummy extends Entity implements Character {
     int moveSpeed = 2;
     int chaseRange = 200;
     int attackRange = 50;
-    int attackDamage = 15;
+    int attackDamage = 20;
 
     public int effectType = 0;
     public int effectDuration = 0;
     public int originalMoveSpeed;
     public boolean confused = false;
-
 
     int attackCooldown = 1500;
     long lastAttackTime = System.currentTimeMillis();
@@ -35,6 +34,7 @@ public class Dummy extends Entity implements Character {
     long attackAnimationStartTime = 0;
     boolean stopMoving = false;
     boolean isDead = false;
+    private boolean deathEffectStarted = false; // Track if death effect has been started
 
     public DeathEffect deathEffect;
 
@@ -94,6 +94,9 @@ public class Dummy extends Entity implements Character {
             // Use the choice parameter directly instead of calling getRandomCharacterChoice() again
             switch (choice) {
                 case 1:
+                    this.attackDamage = 22;
+                    this.moveSpeed = 3;
+                    this.health = 100;
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch1_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch1_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch1_lwalk1.png"));
@@ -107,6 +110,9 @@ public class Dummy extends Entity implements Character {
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch1_sp.png"));
                     break;
                 case 2:
+                    this.attackDamage = 30;
+                    this.moveSpeed = 2;
+                    this.health = 120;
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch2_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch2_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch2_lwalk1.png"));
@@ -120,6 +126,9 @@ public class Dummy extends Entity implements Character {
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch2_sp.png"));
                     break;
                 case 3:
+                    this.attackDamage = 15;
+                    this.moveSpeed = 5;
+                    this.health = 95;
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch3_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch3_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch3_lwalk1.png"));
@@ -238,6 +247,14 @@ public class Dummy extends Entity implements Character {
         } else {
             healthIcon.image = healthImages[5];
             collisionOn = false;
+
+            // Check if we need to start death effect
+            if (!deathEffectStarted && health <= 0) {
+                isDead = true;
+                deathEffectStarted = true;
+                deathEffect.startEffect(worldX, worldY);
+                System.out.println("Dummy death effect started at: " + worldX + ", " + worldY);
+            }
         }
     }
 
@@ -373,13 +390,19 @@ public class Dummy extends Entity implements Character {
     }
 
     public void update() {
+        // Check if health is 0 or less
         if (health <= 0) {
-            if (!isDead) {
+            // Make sure death effect is started
+            if (!deathEffectStarted) {
                 isDead = true;
+                deathEffectStarted = true;
                 deathEffect.startEffect(worldX, worldY);
+                System.out.println("Dummy death effect started in update at: " + worldX + ", " + worldY);
             }
+
+            // Update the death effect animation
             deathEffect.update();
-            return;
+            return; // Skip AI controls if dead
         }
 
         updateEffects();
@@ -390,21 +413,16 @@ public class Dummy extends Entity implements Character {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             spriteCounter = 0;
         }
-
-        moveToPlayer();
-        spriteCounter++;
-        if (spriteCounter > 12) {
-            spriteNum = (spriteNum == 1) ? 2 : 1;
-            spriteCounter = 0;
-        }
     }
 
     public void draw(Graphics2D g2) {
+        // If dummy is dead, only draw the death effect
         if (health <= 0) {
             deathEffect.draw(g2);
             return;
         }
 
+        // Draw dummy normally if not dead
         BufferedImage image = rightidle;
         if (direction != null) {
             switch (direction) {
@@ -425,6 +443,9 @@ public class Dummy extends Entity implements Character {
                     break;
                 case "rightidle":
                     image = rightidle;
+                    break;
+                case "sp":
+                    image = sp;
                     break;
             }
         }
@@ -466,5 +487,10 @@ public class Dummy extends Entity implements Character {
             int healthBarY = worldY - (gp.tileSize / 2) - 20;
             g2.drawImage(healthIcon.image, 425, -150, gp.tileSize * 8, gp.tileSize * 8, null);
         }
+    }
+
+    // Method to check if death animation is complete
+    public boolean isDeathComplete() {
+        return deathEffectStarted && deathEffect.isComplete();
     }
 }

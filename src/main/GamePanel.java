@@ -66,12 +66,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public CollisionChecker cChecker = new CollisionChecker(this);
 
-//    public AssetSetter aSetter = new AssetSetter(this);
     public Sound sound = new Sound();
 
     public Dummy dummy = new Dummy(this);
     public Player player = new Player(this, keyH);
-//    public Player player2 = new Player(this,keyH);
     Image backgroundImage;
     public SuperObject obj[] = new SuperObject[10];
 
@@ -82,9 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
 
         roundManager = new RoundManager(this);
-
     }
-
 
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -112,50 +108,55 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         if (gameState == playState) {
-            System.out.println("Player Health (before RoundManager): " + player.health);
-            System.out.println("Dummy Health (before RoundManager): " + dummy.health);
-            roundManager.update();
-
-            // The RoundManager's update() method now handles checking for the end of the match.
-            // Remove the redundant check here.
-            // if (roundManager.getCurrentRound() > roundManager.getMaxRounds()) {
-            //     if (roundManager.getPlayerWins() > roundManager.getDummyWins()) {
-            //         gameState = winState;
-            //     } else if (roundManager.getDummyWins() > roundManager.getPlayerWins()) {
-            //         gameState = gameOverState;
-            //     } else {
-            //         // Handle a draw in the overall match if needed
-            //         gameState = gameOverState; // Or a specific draw state
-            //     }
-            // }
-
-            // Continue with your existing code for player/dummy updates
+            // First update entities based on their current state
             if (player.health <= 0) {
-                player.deathEffect.update();
-                if (player.deathEffect.isComplete()) {
-                    // Don't immediately go to game over - let round manager handle it
-                    // gameState = gameOverState;
-                }
+                // Player is dead, update death effect
+                player.update(); // This will handle the death effect
+
+                // Continue updating dummy based on its health
                 if (dummy.health > 0) {
                     dummy.update();
                 } else {
-                    dummy.deathEffect.update();
+                    dummy.update(); // This will handle dummy's death effect if health <= 0
                 }
             } else if (player.health > 0 && dummy.health > 0) {
+                // Both entities are alive, update normally
                 player.update();
                 dummy.update();
             } else if (player.health > 0 && dummy.health <= 0) {
+                // Dummy is dead, player is alive
                 player.update();
-                dummy.deathEffect.update();
-                if (dummy.deathEffect.isComplete()) {
-                    // Don't immediately go to win state - let round manager handle it
-                    // gameState = winState;
+                dummy.update(); // This will handle the death effect
+            }
+
+            // Only let RoundManager end the round if death animations are complete
+            boolean readyForRoundEnd = true;
+
+            // Check if we're waiting for death animations
+            if (player.health <= 0) {
+                if (!player.isDeathComplete()) {
+                    readyForRoundEnd = false;
                 }
             }
+
+            if (dummy.health <= 0) {
+                if (!dummy.isDeathComplete()) {
+                    readyForRoundEnd = false;
+                }
+            }
+
+            // Only update round manager if we're not waiting on animations
+            if (readyForRoundEnd) {
+                System.out.println("Player Health: " + player.health);
+                System.out.println("Dummy Health: " + dummy.health);
+                roundManager.update();
+            }
+
         } else if (gameState == pauseState) {
             sound.stop();
         } else if (gameState == roundTransitionState) {
-            // Just wait for the round manager to handle the transition
+            // Handle round transitions in the round manager
+            roundManager.update();
         }
     }
 
@@ -166,17 +167,13 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (gameState == titleState) {
             ui.draw(g2);
-
         } else if (gameState == choosingState) {
             ui.draw(g2);
         } else if (gameState == winState) {
             ui.drawWinScreen(g2); // Call the method to draw the win screen
         } else if (gameState == winNameInputState) {
             ui.drawNameInputDialog(g2,"Enter your name: ");
-        }
-
-        else {
-
+        } else {
             if (backgroundImage != null) {
                 g2.drawImage(backgroundImage, 0, 0, screenWidth, screenHeight, this);
             }
@@ -192,23 +189,19 @@ public class GamePanel extends JPanel implements Runnable {
                     obj[i].draw(g2, this);
                 }
             }
-            // Draw player based on state
-            if (player.health > 0) {
-                player.draw(g2);
-            } else {
-                player.deathEffect.draw(g2);
-            }
-            // Draw dummy based on state
-            if (dummy.health > 0) {
-                dummy.draw(g2);
-            } else {
-                dummy.deathEffect.draw(g2);
-            }
+
+            // Draw player - the player's draw method will handle whether to show
+            // the character sprite or death effect
+            player.draw(g2);
+
+            // Draw dummy - same approach as player
+            dummy.draw(g2);
+
             // Draw UI
             ui.draw(g2);
-            g2.dispose();
-
         }
+
+        g2.dispose();
     }
 
     public void setupGame() {
@@ -223,17 +216,18 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
-        public void restart(){
-            // Stop any currently playing music first
-            sound.stopMusic();
 
-            // Start a new match with rounds
-            roundManager.startMatch();
+    public void restart() {
+        // Stop any currently playing music first
+        sound.stopMusic();
 
-            // Reset game state to play state
-            gameState = playState;
+        // Start a new match with rounds
+        roundManager.startMatch();
 
-            // Play background music
-            // sound.playMusic(1);
-        }
+        // Reset game state to play state
+        gameState = playState;
+
+        // Play background music
+        // sound.playMusic(1);
     }
+}
