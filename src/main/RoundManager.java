@@ -44,84 +44,40 @@ public class RoundManager {
         matchWinner = null;
         startNewRound();
     }
-//    public void update() {
-//        if (gp.gameState == gp.playState) {
-//            if (!roundEnded) {
-//                long elapsedTime = (System.currentTimeMillis() - roundStartTime) / 1000;
-//                System.out.println("Elapsed Time: " + elapsedTime + ", isTimeUp(): " + isTimeUp());
-//                if (gp.player.health <= 0 || gp.dummy.health <= 0 || isTimeUp()) {
-//                    endRound();
-//                    gp.gameState = gp.roundTransitionState;
-//                }
-//            }
-//        } else if (gp.gameState == gp.roundTransitionState) {
-//            transitionCounter++;
-//            if (transitionCounter > (gp.fps * (roundTransitionDelay / 1000))) {
-//                transitionCounter = 0;
-//                if (currentRound < maxRounds) { // Continue to the next round if not the last
-//                    currentRound++;
-//                    startNewRound();
-//                } else if (currentRound == maxRounds && !matchEnded) { // After the last round
-//                    matchEnded = true;
-//                    matchWinner = playerWins > dummyWins ? "player" : "dummy";
-//                    if (matchWinner.equals("player")) {
-//                        gp.gameState = gp.winState;
-//                    } else {
-//                        gp.gameState = gp.gameOverState;
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    public void update() {
-//        if (!roundEnded) {
-//            long elapsedTime = (System.currentTimeMillis() - roundStartTime) / 1000;
-//            System.out.println("Elapsed Time: " + elapsedTime + ", isTimeUp(): " + isTimeUp());
-//            if (gp.player.health <= 0 || gp.dummy.health <= 0 || isTimeUp()) {
-//                endRound();
-//            }
-//        } else if (!matchEnded) {
-//            if (System.currentTimeMillis() - roundEndTime >= roundTransitionDelay) {
-//                if (playerWins >= (maxRounds / 2 + 1) || dummyWins >= (maxRounds / 2 + 1)) {
-//                    matchEnded = true;
-//                    gp.gameState = playerWins > dummyWins ? gp.winState : gp.gameOverState;
-//                } else {
-//                    currentRound++;
-//                    startNewRound();
-//                }
-//            }
-//        }
-//    }
-//
-public void update() {
-    if (gp.gameState == gp.playState) {
-        if (!roundEnded) {
-            long elapsedTime = (System.currentTimeMillis() - roundStartTime) / 1000;
-            System.out.println("Elapsed Time: " + elapsedTime + ", isTimeUp(): " + isTimeUp());
-            if (gp.player.health <= 0 || gp.dummy.health <= 0 || isTimeUp()) {
-                endRound();
-                gp.gameState = gp.roundTransitionState;
+
+    public void update() {
+        if (gp.gameState == gp.playState) {
+            if (!roundEnded) {
+                long elapsedTime = (System.currentTimeMillis() - roundStartTime) / 1000;
+                System.out.println("Elapsed Time: " + elapsedTime + ", isTimeUp(): " + isTimeUp());
+
+                // Only end round if health is 0 or time is up
+                // Note: Death animations are handled in GamePanel's update method
+                if (gp.player.health <= 0 || gp.dummy.health <= 0 || isTimeUp()) {
+                    endRound();
+                    gp.gameState = gp.roundTransitionState;
+                }
             }
-        }
-    } else if (gp.gameState == gp.roundTransitionState) {
-        transitionCounter++;
-        if (transitionCounter > (gp.fps * (roundTransitionDelay / 1000))) {
-            transitionCounter = 0;
-            if (currentRound < maxRounds) { // Continue to the next round if not the last
-                currentRound++;
-                startNewRound();
-            } else if (currentRound == maxRounds && !matchEnded) { // After the last round
-                matchEnded = true;
-                matchWinner = playerWins > dummyWins ? "player" : "dummy";
-                if (matchWinner.equals("player")) {
-                    gp.gameState = gp.winState;
-                } else {
-                    gp.gameState = gp.gameOverState;
+        } else if (gp.gameState == gp.roundTransitionState) {
+            transitionCounter++;
+            if (transitionCounter > (gp.fps * (roundTransitionDelay / 1000))) {
+                transitionCounter = 0;
+                if (currentRound < maxRounds) { // Continue to the next round if not the last
+                    currentRound++;
+                    startNewRound();
+                } else if (currentRound == maxRounds && !matchEnded) { // After the last round
+                    matchEnded = true;
+                    matchWinner = playerWins > dummyWins ? "player" : "dummy";
+                    if (matchWinner.equals("player")) {
+                        gp.gameState = gp.winState;
+                    } else {
+                        gp.gameState = gp.gameOverState;
+                    }
                 }
             }
         }
     }
-}
+
     private boolean isTimeUp() {
         return (System.currentTimeMillis() - roundStartTime) / 1000 >= roundTimeLimit;
     }
@@ -146,7 +102,6 @@ public void update() {
                 dummyWins++;
             } else {
                 // Draw - no one gets a point
-                // Alternatively, you could give a point to both or handle draws differently
             }
         }
     }
@@ -179,6 +134,7 @@ public void update() {
         if (isTimeUp()) return 0;
         return roundTimeLimit - (int)((System.currentTimeMillis() - roundStartTime) / 1000);
     }
+
     public String getMatchWinner() {
         return matchWinner;
     }

@@ -5,7 +5,6 @@ import java.awt.event.KeyListener;
 import entity.Dummy;
 
 public class KeyHandler implements KeyListener {
-
     GamePanel gp;
     public boolean up, left, right, punch, kick, sp;
     public boolean isEnteringName = false;
