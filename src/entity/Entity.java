@@ -14,7 +14,6 @@ public class Entity {
     public boolean collisionOn = false;
     public int spriteCounter = 0, spriteNum = 1;
 
-
     public int maxHealth = 100;
     public int health = maxHealth;
     public Health healthIcon;

@@ -26,11 +26,6 @@ public class Dummy extends Entity implements Character {
     public int originalMoveSpeed;
     public boolean confused = false;
 
-    // Special ability properties
-    public static final long SPECIAL_COOLDOWN = 15000; // 15 seconds in milliseconds
-    public static long lastSpecialTime = 0;
-    public static boolean specialReady = true;
-    public Effects specialEffect;
 
     int attackCooldown = 1500;
     long lastAttackTime = System.currentTimeMillis();
@@ -48,6 +43,7 @@ public class Dummy extends Entity implements Character {
         this.gp = gp;
         worldX = 550;
         worldY = 420;
+        setDefaultValues();
         solidArea = new Rectangle(8, 16, 32, 16);
         originalMoveSpeed = moveSpeed;
 
@@ -58,9 +54,15 @@ public class Dummy extends Entity implements Character {
         healthIcon = new Health();
         updateHealthIcon();
         deathEffect = new DeathEffect(gp, this);
-        specialEffect = new Effects(gp, this);
     }
-
+    public void setDefaultValues() {
+        worldX = gp.tileSize * 10; // Example starting X position
+        worldY = gp.tileSize * 10; // Example starting Y position
+        speed = 2; // Example speed
+        direction = "left"; // Example initial direction
+        health = 50; // Example initial health
+        // Initialize other default properties as needed
+    }
     public void applyEffect(int effectType, int duration) {
         this.effectType = effectType;
         this.effectDuration = duration * 60; // Convert to frames (assuming 60 fps)
@@ -91,15 +93,15 @@ public class Dummy extends Entity implements Character {
 
     @Override
     public void getDummy(int choice) {
-        // Existing getDummy implementation remains unchanged
         try {
             // If choice is 0 (default), use a fallback choice
             if (choice == 0) {
                 choice = 1; // Default to character 1 if no choice was made
             }
 
+            // Use the choice parameter directly instead of calling getRandomCharacterChoice() again
             switch (choice) {
-                case 1://ARIEL
+                case 1:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch1_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch1_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch1_lwalk1.png"));
@@ -111,13 +113,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch1_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch1_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch1_sp.png"));
-
-                    this.health = 120;
-                    this.attackDamage = 7;
-                    this.speed = 1;
                     break;
-
-                case 2://CINDERELLA
+                case 2:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch2_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch2_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch2_lwalk1.png"));
@@ -129,12 +126,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch2_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch2_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch2_sp.png"));
-                    this.health = 85;
-                    this.attackDamage = 10;
-                    this.speed = 5;
                     break;
-
-                case 3://ELSA
+                case 3:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch3_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch3_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch3_lwalk1.png"));
@@ -146,13 +139,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch3_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch3_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch3_sp.png"));
-
-                    this.health = 75;
-                    this.attackDamage = 12;
-                    this.speed = 4;
                     break;
-
-                case 4://MOANA
+                case 4:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch4_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch4_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch4_lwalk1.png"));
@@ -164,13 +152,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch4_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch4_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch4_sp.png"));
-
-                    this.health = 150;
-                    this.attackDamage = 5;
-                    this.speed = 4;
                     break;
-
-                case 5://MULAN
+                case 5:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch5_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch5_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch5_lwalk1.png"));
@@ -182,13 +165,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch5_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch5_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch5_sp.png"));
-
-                    this.health = 60;
-                    this.attackDamage = 15;
-                    this.speed = 6;
                     break;
-
-                case 6://SNOW WHITE
+                case 6:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch6_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch6_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch6_lwalk1.png"));
@@ -200,12 +178,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch6_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch6_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch6_sp.png"));
-                    this.health = 145;
-                    this.attackDamage = 9;
-                    this.speed = 3;
                     break;
-
-                case 7://TIANA
+                case 7:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch7_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch7_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch7_lwalk1.png"));
@@ -217,12 +191,8 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch7_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch7_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch7_sp.png"));
-                    this.health = 160;
-                    this.attackDamage = 5;
-                    this.speed = 3;
                     break;
-
-                case 8://RAPUNZEL
+                case 8:
                     up1 = ImageIO.read(getClass().getResource("/res/npc/ch8_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/npc/ch8_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/npc/ch8_lwalk1.png"));
@@ -234,23 +204,19 @@ public class Dummy extends Entity implements Character {
                     punch = ImageIO.read(getClass().getResource("/res/npc/ch8_lpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/npc/ch8_lkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/npc/ch8_sp.png"));
-                    this.health = 100;
-                    this.attackDamage = 9;
-                    this.speed = 5;
                     break;
-            // Use the choice parameter directly instead of calling getRandomCharacterChoice() again
-            default:
-                System.out.println("Invalid NPC choice: " + choice + ", defaulting to character 1");
-                getDummy(1);
-                break;
-         }
+                default:
+                    // Fallback to character 1 if an unsupported choice is made
+                    System.out.println("Invalid NPC choice: " + choice + ", defaulting to character 1");
+                    getDummy(1);
+                    break;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void loadHealthImages() {
-        // Existing loadHealthImages implementation remains unchanged
         try {
             healthImages = new BufferedImage[6];
 
@@ -267,7 +233,6 @@ public class Dummy extends Entity implements Character {
     }
 
     public void updateHealthIcon() {
-        // Existing updateHealthIcon implementation remains unchanged
         if (health == 100) {
             healthIcon.image = healthImages[0];
         } else if (health <= 80 && health > 60) {
@@ -281,48 +246,6 @@ public class Dummy extends Entity implements Character {
         } else {
             healthIcon.image = healthImages[5];
             collisionOn = false;
-        }
-    }
-
-    // New methods for special ability
-    public static boolean canUseSpecial() {
-        long currentTime = System.currentTimeMillis();
-        if (!specialReady && currentTime - lastSpecialTime >= SPECIAL_COOLDOWN) {
-            specialReady = true;
-        }
-        return specialReady;
-    }
-
-    public static void triggerSpecialCooldown() {
-        lastSpecialTime = System.currentTimeMillis();
-        specialReady = false;
-    }
-
-    public long getRemainingCooldown() {
-        if (specialReady) return 0;
-
-        long currentTime = System.currentTimeMillis();
-        long elapsed = currentTime - lastSpecialTime;
-        long remaining = SPECIAL_COOLDOWN - elapsed;
-        return remaining > 0 ? remaining : 0;
-    }
-
-    public void useSpecialAbility() {
-        if (canUseSpecial()) {
-            direction = "sp";
-            isAttacking = true;
-            attackAnimationStartTime = System.currentTimeMillis();
-
-            // Apply protection effect to self
-            specialEffect.startEffect(worldX, worldY);
-
-            // Temporary invulnerability
-            health += 10; // Heal a bit
-            if (health > 100) health = 100;
-            updateHealthIcon();
-
-            // Trigger cooldown
-            triggerSpecialCooldown();
         }
     }
 
@@ -348,10 +271,7 @@ public class Dummy extends Entity implements Character {
                     chasePlayer();
                 }
 
-                // Randomly use special ability when ready
-                if (canUseSpecial() && random.nextInt(100) < 5) { // 5% chance each update when in range
-                    useSpecialAbility();
-                } else if (distanceToPlayer < attackRange && System.currentTimeMillis() - lastAttackTime >= attackCooldown) {
+                if (distanceToPlayer < attackRange && System.currentTimeMillis() - lastAttackTime >= attackCooldown) {
                     attackPlayer();
                     lastAttackTime = System.currentTimeMillis();
                 }
@@ -362,7 +282,6 @@ public class Dummy extends Entity implements Character {
     }
 
     public void moveAwayFromPlayer() {
-        // Existing moveAwayFromPlayer implementation remains unchanged
         if (gp.player.worldX < worldX) {
             worldX += moveSpeed;
         } else {
@@ -372,7 +291,6 @@ public class Dummy extends Entity implements Character {
     }
 
     public void chasePlayer() {
-        // Existing chasePlayer implementation remains unchanged
         if (!stopMoving) {
             if (gp.player.worldX < worldX) {
                 // Move opposite direction if confused
@@ -409,36 +327,26 @@ public class Dummy extends Entity implements Character {
                 direction = "kick";
                 break;
             case 2:
-                if (canUseSpecial()) {
-                    useSpecialAbility();
-                } else {
-                    // Fallback to punch if special is on cooldown
-                    direction = "punch";
-                }
+                direction = "sp";
                 break;
         }
 
         isAttacking = true;
         attackAnimationStartTime = System.currentTimeMillis();
+        gp.player.health -= attackDamage;
 
-        // Only apply damage if not using special ability
-        if (direction != "sp") {
-            gp.player.health -= attackDamage;
-
-            if (gp.player.worldX < worldX) {
-                gp.player.worldX -= 10;
-                worldX += 10;
-            } else {
-                gp.player.worldX += 10;
-                worldX -= 10;
-            }
-
-            gp.player.updateHealthIcon();
+        if (gp.player.worldX < worldX) {
+            gp.player.worldX -= 10;
+            worldX += 10;
+        } else {
+            gp.player.worldX += 10;
+            worldX -= 10;
         }
+
+        gp.player.updateHealthIcon();
     }
 
     private void resetEffects() {
-        // Existing resetEffects implementation remains unchanged
         stopMoving = false;
         moveSpeed = originalMoveSpeed;
         confused = false;
@@ -446,7 +354,6 @@ public class Dummy extends Entity implements Character {
     }
 
     private void updateEffects() {
-        // Existing updateEffects implementation remains unchanged
         if (effectDuration > 0) {
             effectDuration--;
 
@@ -484,7 +391,13 @@ public class Dummy extends Entity implements Character {
         }
 
         updateEffects();
-        specialEffect.update();
+
+        moveToPlayer();
+        spriteCounter++;
+        if (spriteCounter > 12) {
+            spriteNum = (spriteNum == 1) ? 2 : 1;
+            spriteCounter = 0;
+        }
 
         moveToPlayer();
         spriteCounter++;
@@ -515,9 +428,6 @@ public class Dummy extends Entity implements Character {
                 case "kick":
                     image = kick;
                     break;
-                case "sp":
-                    image = sp;
-                    break;
                 case "leftidle":
                     image = leftidle;
                     break;
@@ -528,9 +438,6 @@ public class Dummy extends Entity implements Character {
         }
 
         g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
-
-        // Draw special effect if active
-        specialEffect.draw(g2);
 
         // Draw effect indicator if an effect is active
         if (effectDuration > 0) {
@@ -560,31 +467,6 @@ public class Dummy extends Entity implements Character {
 
             // Draw effect circle around character
             g2.fillOval(worldX - 5, worldY - 5, gp.tileSize * 2 + 10, gp.tileSize * 2 + 10);
-        }
-
-        // Draw special ability cooldown indicator
-        // Draw special ability cooldown indicator
-        if (!canUseSpecial()) {
-            // Modified cooldown bar dimensions and position
-            int cooldownBarWidth = 120; // Increased width
-            int cooldownBarHeight = 10; // Increased height
-            int cooldownBarX = 490; // Position horizontally aligned with health bar
-            int cooldownBarY = 30; // Position below health bar
-
-            // Draw background bar
-            g2.setColor(new Color(100, 100, 100, 180)); // Darker background
-            g2.fillRect(cooldownBarX, cooldownBarY, cooldownBarWidth, cooldownBarHeight);
-
-            // Calculate and draw remaining cooldown
-            double cooldownPercentage = (double)getRemainingCooldown() / SPECIAL_COOLDOWN;
-            int remainingWidth = (int)(cooldownBarWidth * cooldownPercentage);
-            g2.setColor(new Color(255, 0, 50, 220)); // Different color for enemy
-            g2.fillRect(cooldownBarX + 20, cooldownBarY + 55, remainingWidth + cooldownBarWidth/2, cooldownBarHeight*2);
-
-            // Add border
-            g2.setColor(new Color(0, 0, 0, 200));
-            g2.drawRect(cooldownBarX + 20, cooldownBarY + 55, cooldownBarWidth + cooldownBarWidth/2, cooldownBarHeight*2);
-
         }
 
         if (healthIcon != null && healthIcon.image != null) {

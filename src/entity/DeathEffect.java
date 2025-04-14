@@ -118,7 +118,6 @@ public class DeathEffect {
 
     // Check if death animation is complete (entity has fallen off screen)
     public boolean isComplete() {
-
         return completed;
     }
 }

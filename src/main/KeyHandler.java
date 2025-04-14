@@ -5,13 +5,14 @@ import java.awt.event.KeyListener;
 import entity.Dummy;
 
 public class KeyHandler implements KeyListener {
-
     GamePanel gp;
     public boolean up, left, right, punch, kick, sp;
     public boolean isEnteringName = false;
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
     }
+
+    public boolean p1Up, p1Down, p1EnterPressed;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -48,51 +49,73 @@ public class KeyHandler implements KeyListener {
 
             if (code == KeyEvent.VK_ENTER) {
                 if (gp.ui.commandAbt == 0) {
-                    // Recreate dummy based on choice
-                    gp.gameState = gp.playState; // Now go to map state
-                    gp.cchoice = gp.ui.commandNum;  // Set chosen character
+                    gp.cchoice = gp.ui.commandNum;  // Use commandNum directly as the choice
                     gp.player.getPlayerImage(gp.cchoice);  // Update player image
+                    // Create a new dummy with the current game panel (contains updated choice)
                     gp.dummy = new Dummy(gp);
+                    gp.gameState = gp.playState;
+                    // **ADD THIS LINE HERE:** Start the round manager when entering playState
                     gp.roundManager.startMatch();
                 }
             }
-
         }
-
-
-        if (gp.gameState == gp.choosingMapState) {
-            gp.ui.commandAbt = 0;
-            if (code == KeyEvent.VK_A) {
-                gp.ui.commandNum--;
-                if (gp.ui.commandNum < 1) {
-                    gp.ui.commandNum = 1;
-                }
-            }
-
-            if (code == KeyEvent.VK_D) {
-                gp.ui.commandNum++;
-                if (gp.ui.commandNum > 8) {
-                    gp.ui.commandNum = 8;
-                }
-            }
-
+        if (gp.gameState == gp.PVP_INSTRUCTION_P1) {
             if (code == KeyEvent.VK_ENTER) {
-                if (gp.ui.commandAbt == 0) {
-                    gp.ui.mapChoice = gp.ui.commandNum; // Save map selection
-                    gp.gameState = gp.chooseCharacterState; // Move to play state
-                   // Start the round
+                gp.gameState = gp.PVP_CHOOSE_P1;
+                gp.pvpPlayer = 1; // Indicate Player 1 is choosing
+                gp.ui.commandNum = 1; // Reset character selection command for Player 1
+            }
+        } else if (gp.gameState == gp.PVP_CHOOSE_P1) {
+            if (gp.pvpPlayer == 1) {
+                if (code == KeyEvent.VK_A) {
+                    gp.ui.commandNum--;
+                    if (gp.ui.commandNum < 1) {
+                        gp.ui.commandNum = 8;
+                    }
+                }
+                if (code == KeyEvent.VK_D) {
+                    gp.ui.commandNum++;
+                    if (gp.ui.commandNum > 8) {
+                        gp.ui.commandNum = 1;
+                    }
+                }
+                if (code == KeyEvent.VK_ENTER) {
+                    gp.player1Choice = gp.ui.commandNum;
+                    gp.gameState = gp.PVP_P1_CONFIRMED;
                 }
             }
-
+        } else if (gp.gameState == gp.PVP_P1_CONFIRMED) {
+            if (code == KeyEvent.VK_ENTER) {
+                gp.gameState = gp.PVP_CHOOSE_P2;
+                gp.pvpPlayer = 2; // Indicate Player 2 is choosing
+                gp.ui.commandNum = 1; // Reset character selection command for Player 2
+            }
+        } else if (gp.gameState == gp.PVP_CHOOSE_P2) {
+            if (gp.pvpPlayer == 2) {
+                if (code == KeyEvent.VK_LEFT) {
+                    gp.ui.commandNum--;
+                    if (gp.ui.commandNum < 1) {
+                        gp.ui.commandNum = 8;
+                    }
+                }
+                if (code == KeyEvent.VK_RIGHT) {
+                    gp.ui.commandNum++;
+                    if (gp.ui.commandNum > 8) {
+                        gp.ui.commandNum = 1;
+                    }
+                }
+                if (code == KeyEvent.VK_ENTER) {
+                    gp.player2Choice = gp.ui.commandNum;
+                    gp.gameState = gp.playerVsPlayerPlayState;
+                    gp.initializePvPPlayers();
+                }
+            }
         }
-
-
         if(gp.gameState == gp.choosingState){
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
                 if(gp.ui.commandNum < 0){
                     gp.ui.commandNum = 2;
-
                 }
             }
             if (code == KeyEvent.VK_S) {
@@ -103,20 +126,20 @@ public class KeyHandler implements KeyListener {
             }
 
             if (code == KeyEvent.VK_ENTER) {
-                if(gp.ui.commandNum == 0){
-                    gp.gameState = gp.choosingMapState;
+                if (gp.ui.commandNum == 0) {
+                    gp.gameState = gp.chooseCharacterState; // Go to character select for PvNPC
+                    gp.ui.commandNum = 0;
                 }
-
-                if(gp.ui.commandNum == 1){
-                    // Player vs Player logic here
+                if (gp.ui.commandNum == 1) {
+                    gp.gameState = gp.PVP_INSTRUCTION_P1;  // Go to PvP character choosing
+                    gp.ui.commandNum = 0; // Reset commandNum for the next screen
+                     // Indicate Player 1 is choosing first
                 }
-
-                if(gp.ui.commandNum == 2){
-                    gp.gameState = gp.tileState;
+                if (gp.ui.commandNum == 2) {
+                    System.exit(0);
                 }
             }
         }
-
 
         if(gp.gameState == gp.tileState){
             if (code == KeyEvent.VK_W) {
@@ -372,9 +395,17 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ESCAPE) {
                 gp.gameState = gp.tileState; // Go back to the main menu (adjust as needed)
             }
+        }else if (gp.gameState == gp.playerVsPlayerPlayState) {
+            // Player 1 controls
+            if (code == KeyEvent.VK_W) up = true;   // Jump
+            if (code == KeyEvent.VK_A) left = true; // Walk Left
+            if (code == KeyEvent.VK_D) right = true; // Walk Right
+            if (code == KeyEvent.VK_J) punch = true; // Attack 1
+            if (code == KeyEvent.VK_K) kick = true;  // Attack 2
+            if (code == KeyEvent.VK_L) sp = true;
         }
 
-        // Handle different key presses based on game state
+            // Handle different key presses based on game state
         if (gp.gameState == gp.playState) {
             handlePlayState(code);
         } else if (gp.gameState == gp.pauseState) {
@@ -455,5 +486,15 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_L) {
             sp = false;
         }
+        if (gp.gameState == gp.playerVsPlayerPlayState) {
+            // Player 1 controls release
+            if (code == KeyEvent.VK_W) up = false;
+            if (code == KeyEvent.VK_A) left = false;
+            if (code == KeyEvent.VK_D) right = false;
+            if (code == KeyEvent.VK_J) punch = false;
+            if (code == KeyEvent.VK_K) kick = false;
+            if (code == KeyEvent.VK_L) sp = false;
+        }
+
     }
 }

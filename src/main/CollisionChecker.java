@@ -65,13 +65,36 @@ public class CollisionChecker {
         int targetRightX = target.worldX + target.solidArea.x + target.solidArea.width;
         int targetTopY = target.worldY + target.solidArea.y;
         int targetBottomY = target.worldY + target.solidArea.y + target.solidArea.height;
-
+        switch (entity.direction) {
+            case "up":
+                entityTopY -= entity.speed;
+                break;
+            case "down":
+                entityBottomY += entity.speed;
+                break;
+            case "left":
+                entityLeftX -= entity.speed;
+                break;
+            case "right":
+                entityRightX += entity.speed;
+                break;
+            // Add cases for attack directions if you have them
+        }
         if (entityRightX > targetLeftX &&
                 entityLeftX < targetRightX &&
                 entityBottomY > targetTopY &&
                 entityTopY < targetBottomY) {
             entity.collisionOn = true; // Collision detected
         }
+    }
+    public int checkObject(Entity entity, boolean player) {
+        // ... (your existing object collision code) ...
+        return 999; // Default return
+    }
+
+    public int checkCharacter(Entity entity, Entity[] target) {
+        // ... (your existing character/NPC collision code) ...
+        return 999; // Default return
     }
 
     // New method to check and enforce screen boundaries

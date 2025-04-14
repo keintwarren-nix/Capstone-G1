@@ -2,10 +2,10 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.KeyHandler2;
 import object.Health;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,22 +13,20 @@ import java.io.IOException;
 public class Player extends Entity implements Character{
     GamePanel gp;
     KeyHandler keyH;
-    int damage = 5;
     int attackCooldown = 1000; // 1 second cooldown
-    boolean isJumping = false;
+    public boolean isJumping = false;
     int jumpHeight = 100;
     int jumpStartY;
     public boolean canAttack = true;
     public long lastAttackTime = 0;
-
+    KeyHandler2 keyH2;
     public DeathEffect deathEffect;
-    public Effects specialEffect;
     public boolean isDead = false;
 
     int attackCount = 0; // Track consecutive attacks
     int maxAttackCount = 3; // Limit 3 attacks
     int attackRange = 50; // Player must be within 50 pixels to deal damage
-
+    public int playerNum;
     private int characterChoice;
     public static final int BURN_EFFECT = 1;
     public static final int FREEZE_EFFECT = 2;
@@ -43,76 +41,57 @@ public class Player extends Entity implements Character{
     public int specialEffectDuration = 0;
     public int specialEffectType = 0;
 
-    // Special ability properties
-    public static final long SPECIAL_COOLDOWN = 15000; // 15 seconds in milliseconds
-    public static long lastSpecialTime = 0;
-    public static boolean specialReady = true;
-    private boolean specialActive = false;
-    private long specialActiveStartTime = 0;
-    private int specialActiveDuration = 1000; // 1 second for visual effect
-
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
         this.keyH = keyH;
+        this.keyH2 = null;
         solidArea = new Rectangle(8, 16, 32, 16);
         setDefaultValues();
         // Get player image using GamePanel's character choice
         getPlayerImage(gp.cchoice);
+
+        getPlayerImagePVP(gp.cchoice);
         // Store the character choice for special effect reference
         this.characterChoice = gp.cchoice;
         loadHealthImages();
         healthIcon = new Health();
         updateHealthIcon();
         deathEffect = new DeathEffect(gp, this);
-        specialEffect = new Effects(gp, this);
     }
-
-    // New methods for special ability management
-    public static boolean canUseSpecial() {
-        long currentTime = System.currentTimeMillis();
-        if (!specialReady && currentTime - lastSpecialTime >= SPECIAL_COOLDOWN) {
-            specialReady = true;
-        }
-        return specialReady;
+    public Player(GamePanel gp, KeyHandler2 keyH2) {
+        super(gp);
+        this.gp = gp;
+        this.keyH = null; // Player 2 doesn't use KeyHandler
+        this.keyH2 = keyH2;
+        solidArea = new Rectangle(8, 16, 32, 16);
+        setDefaultValues();
+        getPlayerImage(gp.cchoice); // Assuming both players can choose the same characters for now
+        this.characterChoice = gp.cchoice;
+        loadHealthImages();
+        healthIcon = new Health();
+        updateHealthIcon();
+        deathEffect = new DeathEffect(gp, this);
     }
+    public boolean isTargetInRange(Entity target) {
+        boolean inRange = false;
 
-    public static void triggerSpecialCooldown() {
-        lastSpecialTime = System.currentTimeMillis();
-        specialReady = false;
-    }
+        // Implement your range checking logic here
+        if (target != null) {
+            int distanceX = Math.abs(worldX - target.worldX);
+            int distanceY = Math.abs(worldY - target.worldY);
 
-    public long getRemainingCooldown() {
-        if (specialReady) return 0;
+            // Example: Check if the target is within 2 tiles in both X and Y directions
+            int attackRangeTile = 2;
+            int attackRangePixel = attackRangeTile * gp.tileSize; // Assuming gp.tileSize is accessible
 
-        long currentTime = System.currentTimeMillis();
-        long elapsed = currentTime - lastSpecialTime;
-        long remaining = SPECIAL_COOLDOWN - elapsed;
-        return remaining > 0 ? remaining : 0;
-    }
-
-    public void useSpecialAbility() {
-        if (canUseSpecial()) {
-            direction = "sp";
-            specialActive = true;
-            specialActiveStartTime = System.currentTimeMillis();
-
-            // Apply special effect based on character
-            if (isDummyInRange()) {
-                applySpecialEffect(gp.dummy);
+            if (distanceX <= attackRangePixel && distanceY <= attackRangePixel) {
+                inRange = true;
             }
-
-            // Start visual effect
-            specialEffect.startEffect(worldX, worldY);
-
-            // Trigger cooldown
-            triggerSpecialCooldown();
-
-            // Play sound effect
-            gp.sound.playSE(5);
         }
-    }
 
+        return inRange;
+    }
     public void applySpecialEffect(Dummy target) {
         // Apply different effects based on character selection
         switch(characterChoice) {
@@ -154,7 +133,15 @@ public class Player extends Entity implements Character{
         }
         target.updateHealthIcon();
     }
-
+    public void applySpecialEffect(Entity target) {
+        if (target instanceof Dummy) {
+            Dummy dummyTarget = (Dummy) target;
+            // ... special effect logic for Dummy ...
+        } else if (target instanceof Player) {
+            Player playerTarget = (Player) target;
+            // ... special effect logic for Player ...
+        }
+    }
     public void setDefaultValues() {
         worldX = 100;
         worldY = 420;
@@ -163,7 +150,14 @@ public class Player extends Entity implements Character{
         health = 100;
         isDead = false;
     }
-
+    public void setDefaultValues2() {
+        worldX = 550;
+        worldY = 420;
+        speed = 4;
+        direction = "rightidle";
+        health = 100;
+        isDead = false;
+    }
     @Override
     public void getPlayerImage(int choice) {
         try {
@@ -172,7 +166,7 @@ public class Player extends Entity implements Character{
             }
 
             switch (choice) {
-                case 1://ARIEL
+                case 1:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch1_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch1_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch1_lwalk1.png"));
@@ -184,14 +178,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch1_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch1_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch1_sp.png"));
-
-                    this.health = 120;
-                    this.damage = 7;
-                    this.speed = 1;
-
                     break;
-
-                case 2://CINDERELLA
+                case 2:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch2_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch2_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch2_lwalk1.png"));
@@ -203,13 +191,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch2_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch2_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch2_sp.png"));
-                    this.health = 85;
-                    this.damage = 10;
-                    this.speed = 5;
-
                     break;
-
-                case 3://ELSA
+                case 3:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch3_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch3_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch3_lwalk1.png"));
@@ -221,13 +204,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch3_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch3_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch3_sp.png"));
-
-                    this.health = 75;
-                    this.damage = 12;
-                    this.speed = 4;
-
                     break;
-                case 4://MOANA
+                case 4:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch4_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch4_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch4_lwalk1.png"));
@@ -239,13 +217,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch4_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch4_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch4_sp.png"));
-
-                    this.health = 150;
-                    this.damage = 5;
-                    this.speed = 4;
-
                     break;
-                case 5://MULAN
+                case 5:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch5_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch5_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch5_lwalk1.png"));
@@ -257,13 +230,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch5_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch5_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch5_sp.png"));
-
-                    this.health = 60;
-                    this.damage = 15;
-                    this.speed = 6;
-
                     break;
-                case 6://SNOW WHITE
+                case 6:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch6_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch6_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch6_lwalk1.png"));
@@ -275,11 +243,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch6_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch6_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch6_sp.png"));
-                    this.health = 145;
-                    this.damage = 9;
-                    this.speed = 3;
                     break;
-                case 7://TIANA
+                case 7:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch7_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch7_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch7_lwalk1.png"));
@@ -291,11 +256,8 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch7_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch7_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch7_sp.png"));
-                    this.health = 160;
-                    this.damage = 5;
-                    this.speed = 3;
                     break;
-                case 8://RAPUNZEL
+                case 8:
                     up1 = ImageIO.read(getClass().getResource("/res/player/ch8_jleft.png"));
                     up2 = ImageIO.read(getClass().getResource("/res/player/ch8_jright.png"));
                     left1 = ImageIO.read(getClass().getResource("/res/player/ch8_lwalk1.png"));
@@ -307,19 +269,106 @@ public class Player extends Entity implements Character{
                     punch = ImageIO.read(getClass().getResource("/res/player/ch8_rpunch.png"));
                     kick = ImageIO.read(getClass().getResource("/res/player/ch8_rkick.png"));
                     sp = ImageIO.read(getClass().getResource("/res/player/ch8_sp.png"));
-                    this.health = 100;
-                    this.damage = 9;
-                    this.speed = 5;
                     break;
                 default:
                     System.out.println("Invalid player choice: " + choice);
                     break;
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        e.printStackTrace();
     }
+    }
+    public void getPlayerImagePVP(int choice) {
+        try {
+
+        if (playerNum == 2) {
+            if (choice == 0) {
+                choice = 1; // Default to character 1 if no choice was made
+            }
+                   switch (choice) {
+                       case 1:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch1_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch1_lkick.png"));
+                           break;
+                       case 2:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch2_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch2_lkick.png"));
+                           break;
+                       case 3:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch3_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch3_lkick.png"));
+                           break;
+                       case 4:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch4_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch4_lkick.png"));
+                           break;
+                       case 5:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch5_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch5_lkick.png"));
+                           break;
+                       case 6:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch6_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch6_lkick.png"));
+                           break;
+                       case 7:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch7_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch7_lkick.png"));
+                           break;
+                       case 8:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch8_lpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch8_lkick.png"));
+                           break;
+                       default:
+                           System.out.println("Invalid player choice: " + choice);
+                           break;
+                   }
+
+        }
+        else if
+        (playerNum == 1) {
+                   switch (choice) {
+                       case 1:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch1_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch1_rkick.png"));
+                           break;
+                       case 2:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch2_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch2_rkick.png"));
+                           break;
+                       case 3:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch3_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch3_rkick.png"));
+                           break;
+                       case 4:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch4_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch4_rkick.png"));
+                           break;
+                       case 5:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch5_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch5_rkick.png"));
+                           break;
+                       case 6:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch6_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch6_rkick.png"));
+                           break;
+                       case 7:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch7_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch7_rkick.png"));
+                           break;
+                       case 8:
+                           punch = ImageIO.read(getClass().getResource("/res/player/ch8_rpunch.png"));
+                           kick = ImageIO.read(getClass().getResource("/res/player/ch8_rkick.png"));
+                           break;
+                       default:
+                           System.out.println("Invalid player choice: " + choice);
+                           break;
+                   }
+               }
+
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
 
     public void loadHealthImages() {
         try {
@@ -337,21 +386,18 @@ public class Player extends Entity implements Character{
 
     public void updateHealthIcon() {
 
-        float healthPercent = (float) health / maxHealth;
-
-        if (healthPercent == 1.0f) {
+        if (health == 100) {
             healthIcon.image = healthImages[5];
-        } else if (healthPercent > 0.8f) {
+        } else if (health <= 80 && health > 60) {
             healthIcon.image = healthImages[4];
-        } else if (healthPercent > 0.6f) {
+        }else if (health <= 60 && health > 40) {
             healthIcon.image = healthImages[3];
-        } else if (healthPercent > 0.4f) {
+        }else if (health <= 40 && health > 20) {
             healthIcon.image = healthImages[2];
-        } else if (healthPercent > 0.2f) {
+        }else if (health <= 20 && health > 0) {
             healthIcon.image = healthImages[1];
-        } else {
+        }else{
             healthIcon.image = healthImages[0];
-
             // Check if we need to start death effect
             if (!isDead && health <= 0) {
                 isDead = true;
@@ -360,8 +406,7 @@ public class Player extends Entity implements Character{
         }
     }
 
-
-    public void update() {
+    public void update() throws IOException {
         // Check if player is dead
         if (health <= 0) {
             isDead = true;
@@ -369,31 +414,31 @@ public class Player extends Entity implements Character{
             return; // Skip player controls if dead
         }
 
-        // Update special effect
-        specialEffect.update();
-
-        // Check if special ability is active
-        if (specialActive) {
-            if (System.currentTimeMillis() - specialActiveStartTime >= specialActiveDuration) {
-                specialActive = false;
-                // Return to idle state after special
-                direction = "rightidle";
-            }
-        }
-
-        boolean keyPressed = keyH.up || keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp;
         updateHealthIcon();
 
-        // Handle cooldown after 3 attacks
-        if (!canAttack && System.currentTimeMillis() - lastAttackTime >= attackCooldown) {
-            canAttack = true;
-            attackCount = 0; // Reset attack count after cooldown
+        if (!canAttack) {
+//            System.out.println("canAttack is false. Checking cooldown...");
+            if (System.currentTimeMillis() - lastAttackTime >= attackCooldown) {
+                System.out.println("Cooldown finished. Resetting canAttack and attackCount.");
+                canAttack = true;
+                attackCount = 0;
+            } else {
+                System.out.println("Cooldown still active: " + (System.currentTimeMillis() - lastAttackTime) + " / " + attackCooldown);
+            }
+        } else {
+//            System.out.println("canAttack is true.");
         }
+        if (playerNum == 1) {
+            if (keyH.up || keyH.right || keyH.left || keyH.punch || keyH.kick || keyH.sp) {
+                handleKeyInput(keyH, (gp.player2 != null && gp.gameState == gp.playerVsPlayerPlayState) ? gp.player2 : gp.dummy);
+            }
+        } else if (playerNum == 2) {
 
-        if (keyPressed && !specialActive) {
-            handleKeyInput();
-        } else if (!specialActive && !isJumping && worldY == 420) {
-            direction = "rightidle";
+            if (keyH2 != null && (keyH2.p2UpPressed || keyH2.p2RightPressed || keyH2.p2LeftPressed || keyH2.p2DownPressed || keyH2.p2PunchPressed || keyH2.p2KickPressed || keyH2.p2SpecialPressed)) {
+                handleKeyInput2(keyH2, gp.player);
+            }
+        } else if (!isJumping && worldY == 420) {
+            direction = direction.replace("left", "leftidle").replace("right", "rightidle");
         }
 
         handleJump();
@@ -404,43 +449,100 @@ public class Player extends Entity implements Character{
         }
     }
 
-    public void handleKeyInput() {
+    public void handleKeyInput(KeyHandler kh, Entity target) {
         String prevDirection = direction;
+        boolean moving = false;
 
         if (keyH.up && worldY == 420 && !isJumping) {
             direction = "up";
             isJumping = true;
             jumpStartY = worldY;
+            moving = true;
         } else if (keyH.right) {
             direction = "right";
+            moving = true;
         } else if (keyH.left) {
             direction = "left";
-        } else if (keyH.sp && canUseSpecial()) {
-            // Use special ability
-            useSpecialAbility();
+            moving = true;
         } else if (canAttack && attackCount < maxAttackCount) {
             if (keyH.punch) {
-                performAttack("punch", 3);
+                performAttack("punch", 3,target);
             } else if (keyH.kick) {
-                performAttack("kick", 4);
+                performAttack("kick", 4,target);
+            } else if (keyH.sp) {
+                performAttack("sp", 5,target);
             }
         }
 
         collisionOn = false;
         gp.cChecker.checkTile(this);
-        if (gp.dummy.health > 0) {
+        if (gp.player2 != null && gp.player2.health > 0) {
+            gp.cChecker.checkEntity(this, gp.player2);
+        } else if (gp.dummy != null && gp.dummy.health > 0) {
             gp.cChecker.checkEntity(this, gp.dummy);
         }
 
-        if (!collisionOn) {
+        if (!collisionOn && moving) {
             movePlayer();
+        } else if (!moving && !isJumping && (direction.equals("left") || direction.equals("right"))) {
+            direction = direction.replace("left", "leftidle").replace("right", "rightidle");
+        } else if (!collisionOn && isJumping) {
+            movePlayer(); // Still allow movement while jumping if keys are held
+        } else if (!moving && !isJumping && direction.equals("up")) {
+            direction = direction.replace("up", (prevDirection.contains("left")) ? "leftidle" : "rightidle");
+        }
+
+
+        gp.cChecker.checkScreenBoundaries(this);
+    }
+    public void handleKeyInput2(KeyHandler2 kh, Entity target) {
+        String prevDirection = direction;
+        boolean moving = false;
+
+        if (kh.p2UpPressed&& worldY == 420 && !isJumping) {
+            direction = "up";
+            isJumping = true;
+            jumpStartY = worldY;
+            moving = true;
+        } else if (kh.p2RightPressed) {
+            direction = "right";
+            moving = true;
+        } else if (kh.p2LeftPressed) {
+            direction = "left";
+            moving = true;
+        } else if (kh.p2DownPressed) { // Example of another action for Player 2
+            speed = 8; // Temporary speed boost
+        } else if (canAttack && attackCount < maxAttackCount) {
+            if (kh.p2PunchPressed) {
+                performAttack("punch", 3, target);
+            } else if (kh.p2KickPressed) {
+                performAttack("kick", 4, target);
+            } else if (kh.p2SpecialPressed) {
+                performAttack("sp", 5, target);
+            }
         } else {
-            bounceBack(prevDirection);
+            speed = 4; // Reset speed
+        }
+
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
+        if (gp.player != null && gp.player.health > 0) {
+            gp.cChecker.checkEntity(this, gp.player);
+        }
+
+
+        if (!collisionOn && moving) {
+            movePlayer();
+        } else if (!moving && !isJumping && (direction.equals("left") || direction.equals("right"))) {
+            direction = direction.replace("left", "leftidle").replace("right", "rightidle");
+        } else if (!collisionOn && isJumping) {
+            movePlayer(); // Still allow movement while jumping if keys are held
+        } else if (!moving && !isJumping && direction.equals("up")) {
+            direction = direction.replace("up", (prevDirection.contains("left")) ? "leftidle" : "rightidle");
         }
 
         gp.cChecker.checkScreenBoundaries(this);
     }
-
     public void movePlayer() {
         switch (direction) {
             case "right":
@@ -463,11 +565,19 @@ public class Player extends Entity implements Character{
         collisionOn = false;
     }
 
-    public void performAttack(String attackType, int soundIndex) {
+    public void performAttack(String attackType, int soundIndex, Entity target) {
         direction = attackType;
         gp.sound.playSE(soundIndex);
-        if (isDummyInRange()) {
-            dealDamage(); // Regular damage for normal attacks
+        if (isTargetInRange(target)) {
+            if (attackType.equals("sp")) {
+                if (target instanceof Dummy) {
+                    applySpecialEffect((Dummy) target);
+                } else if (target instanceof Player) {
+                    applySpecialEffect((Player) target);
+                }
+            } else {
+                dealDamage(target); // Regular damage for normal attacks
+            }
         }
         attackCount++;
         if (attackCount >= maxAttackCount) {
@@ -482,13 +592,19 @@ public class Player extends Entity implements Character{
         return dx < attackRange && dy < attackRange;
     }
 
-    public void dealDamage() {
+    public void dealDamage(Entity target) {
         if (gp.dummy.health > 0) {
-            gp.dummy.health -= damage;
+            gp.dummy.health -= 9;
             gp.dummy.updateHealthIcon();
         }
     }
-
+    public void updateSprite() {
+        spriteCounter++;
+        if (spriteCounter > 12) {
+            spriteNum = (spriteNum == 1) ? 2 : 1;
+            spriteCounter = 0;
+        }
+    }
     public void handleJump() {
         if (isJumping) {
 //            gp.sound.playSE(2);
@@ -537,37 +653,16 @@ public class Player extends Entity implements Character{
 
         if(direction == "sp"){
             g2.drawImage(image, worldX, worldY, gp.tileSize * 3, gp.tileSize * 2, null);
-            specialEffect.draw(g2); // Draw special effect
-        } else {
+        }else{
             g2.drawImage(image, worldX, worldY, gp.tileSize * 2, gp.tileSize * 2, null);
         }
 
-        // Draw special ability cooldown indicator
-        // Draw special ability cooldown indicator
-        if (!canUseSpecial()) {
-            // Modified cooldown bar dimensions and position
-            int cooldownBarWidth = 120; // Increased width
-            int cooldownBarHeight = 10; // Increased height
-            int cooldownBarX = 50; // Position horizontally aligned with health bar
-            int cooldownBarY = 30; // Position below health bar
-
-            // Draw background bar
-            g2.setColor(new Color(100, 100, 100, 180)); // Darker background
-            g2.fillRect(cooldownBarX, cooldownBarY, cooldownBarWidth, cooldownBarHeight);
-
-            // Calculate and draw remaining cooldown
-            double cooldownPercentage = (double)getRemainingCooldown() / SPECIAL_COOLDOWN;
-            int remainingWidth = (int)(cooldownBarWidth * cooldownPercentage);
-            g2.setColor(new Color(0, 255, 125, 220)); // Brighter blue
-            g2.fillRect(cooldownBarX + 20, cooldownBarY + 55, remainingWidth + cooldownBarWidth/2, cooldownBarHeight*2);
-
-            // Add border
-            g2.setColor(new Color(0, 0, 0, 200));
-            g2.drawRect(cooldownBarX + 20, cooldownBarY + 55, cooldownBarWidth + cooldownBarWidth/2, cooldownBarHeight*2);
-        }
-
         if (healthIcon != null && healthIcon.image != null) {
-            g2.drawImage(healthIcon.image, -40, -150, gp.tileSize * 8, gp.tileSize * 8, null);
+            if (this == gp.player) {
+                g2.drawImage(healthIcon.image, -40, -150, gp.tileSize * 8, gp.tileSize * 8, null); // Player 1's health
+            } else if (this == gp.player2) {
+                g2.drawImage(healthIcon.image, gp.screenWidth - (gp.tileSize * 8) + 40, -150, gp.tileSize * 8, gp.tileSize * 8, null); // Player 2's health
+            }
         }
     }
 
